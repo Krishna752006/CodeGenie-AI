@@ -4,14 +4,7 @@ from pydantic import BaseModel
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-import os
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0" # to remove warning messages
-
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-
-# ✅ Load DeepSeek Coder model
-MODEL_NAME = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Ensure correct model version
+MODEL_NAME = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Model Used
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, cache_dir="./deepseek_model")
 model = AutoModelForCausalLM.from_pretrained(
