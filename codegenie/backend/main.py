@@ -4,18 +4,18 @@ from pydantic import BaseModel
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer # DL Library Developed by Hugging Face
 
-MODEL_NAME = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Model Used
+Model_Name = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Model Used
 Model_location = "./deepseek_model" # Model Location
 
 # Remove comments if you have a gpu and change to cuda
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, cache_dir = Model_location) # Downloads and loads the tokenizer, not the whole model.
+tokenizer = AutoTokenizer.from_pretrained(Model_Name, cache_dir = Model_location) # Downloads and loads the tokenizer, not the whole model.
 model = AutoModelForCausalLM.from_pretrained( # Downloads and loads the whole model.
-    MODEL_NAME,
+    Model_Name,
     # torch_dtype = torch.float16, # Makes the usual values from float32 to float16, reducing the data thus making it faster for processing. But Works well only on GPUs.
     device_map = "cpu", # Runs the Model Entirely on CPU
     offload_folder = "./offload", # Loads the Model into ROM if RAM being used is completely filled. Only used for better the loading.
     cache_dir = Model_location
-).eval()
+).eval() # Disables training-specific behaviors like Droupout, etc.. and puts in evaluating mode.
 
 # ✅ Create FastAPI app
 app = FastAPI()
