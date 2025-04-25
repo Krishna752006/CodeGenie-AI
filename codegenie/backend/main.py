@@ -2,17 +2,19 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer # DL Library Developed by Hugging Face
 
 MODEL_NAME = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Model Used
+Model_location = "./deepseek_model" # Model Location
 
-tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, cache_dir="./deepseek_model")
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_NAME, 
-    #torch_dtype=torch.float16,  # remove comments is you have a gpu
-    device_map="cpu",  # change to cuda if you have gpu
-    offload_folder="./offload",  
-    cache_dir="./deepseek_model"
+# Remove comments if you have a gpu and change to cuda
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, cache_dir = Model_location) # Downloads and loads the tokenizer, not the whole model.
+model = AutoModelForCausalLM.from_pretrained( # Downloads and loads the whole model.
+    MODEL_NAME,
+    # torch_dtype = torch.float16, # Makes the usual values from float32 to float16, reducing the data thus making it faster for processing. But Works well only on GPUs.
+    device_map = "cpu", # Runs the Model Entirely on CPU
+    offload_folder = "./offload", # Loads the Model into ROM if RAM being used is completely filled. Only used for better the loading.
+    cache_dir = Model_location
 ).eval()
 
 # ✅ Create FastAPI app
