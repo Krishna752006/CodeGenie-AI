@@ -17,17 +17,16 @@ model = AutoModelForCausalLM.from_pretrained( # Downloads and loads the whole mo
     cache_dir = Model_location
 ).eval() # Disables training-specific behaviors like Droupout, etc.. and puts in evaluating mode.
 
-# ✅ Create FastAPI app
 app = FastAPI()
 
-# ✅ Fix CORS issues for browser requests
+# Add the CORS middleware to handle cross-origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins during development
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
+    allow_origins=["*"], # Allow all domains to make requests to this API
+    allow_credentials=True, # Allow credentials such as cookies and authorization headers to be included in requests
+    allow_methods=["*"],  # Allow all HTTP methods: GET, POST, PUT, DELETE, etc.
+    allow_headers=["*"], # Allow all headers in the requests (e.g., content-type, authorization)
+    expose_headers=["*"] # Expose all response headers to the client (this is useful for debugging)
 )
 
 class CodeRequest(BaseModel):
