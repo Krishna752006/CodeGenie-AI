@@ -4,7 +4,7 @@ Intel i7 - CPU
 2:46:60
 2:49:49
 
-Intel i7 with RTX
+Ryzen 5 with RTX
 
 13:30
 22:11
