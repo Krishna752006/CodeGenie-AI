@@ -1,0 +1,106 @@
+// 
+// Package configuration for the CodeGenie VSCode extension.
+// Describes metadata, activation events, UI contributions, build scripts,
+// and all dependencies needed for development and production.
+//
+{
+    // Extension basic information
+    "name": "codegenie",
+    "displayName": "CodeGenie",
+    "description": "AI-powered coding assistant using DeepSeek Coder.",
+    "version": "1.0.0",
+    "publisher": "Mahesh/KC",
+
+    // Required VSCode version to run this extension
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+
+    // Category shown in the VSCode Marketplace
+    "categories": [
+        "Programming Languages"
+    ],
+
+    // Path to the compiled extension entry file
+    "main": "dist/extension.js",
+
+    // VSCode-specific contributions: activation triggers, UI, commands
+    "contributes": {
+        // Events that trigger the extension to activate
+        "activationEvents": [
+            "onView:codegenieView",          // Activate when the CodeGenie view is opened
+            "onCommand:codegenie.openPanel"   // Activate when the Open Panel command is executed
+        ],
+
+        // Adds a custom container (section) to the Activity Bar
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "codegenieViewContainer",
+                    "title": "CodeGenie",
+                    "icon": "./media/icon.png"
+                }
+            ]
+        },
+
+        // Adds a webview panel inside the custom container
+        "views": {
+            "codegenieViewContainer": [
+                {
+                    "type": "webview",
+                    "id": "codegenieView",
+                    "name": "CodeGenie AI",
+                    "icon": "./media/icon.png"
+                }
+            ]
+        },
+
+        // Commands available in the Command Palette or keybindings
+        "commands": [
+            {
+                "command": "codegenie.getCode",
+                "title": "CodeGenie: Generate Code"
+            },
+            {
+                "command": "codegenie.enableAutocomplete",
+                "title": "CodeGenie: Enable Autocomplete"
+            },
+            {
+                "command": "codegenie.disableAutocomplete",
+                "title": "CodeGenie: Disable Autocomplete"
+            },
+            {
+                "command": "codegenie.openPanel",
+                "title": "CodeGenie: Open AI Panel"
+            }
+        ]
+    },
+
+    // Project build and development scripts
+    "scripts": {
+        "watch:tsc": "tsc -w",                             // Watch and compile TypeScript files
+        "watch:esbuild": "esbuild src/index.tsx --bundle --outfile=dist/bundle.js --watch", // Watch and bundle the UI
+        "compile": "webpack --mode production",            // Production build of the backend
+        "watch": "webpack --watch",                        // Watch and build backend on file changes
+        "build-ui": "cd codegenie-ui && npm install && npm run build" // Install and build frontend UI
+    },
+
+    // Runtime dependencies for the extension and UI
+    "dependencies": {
+        "axios": "^1.3.0",                   // HTTP client for making API requests
+        "react-helmet-async": "^2.0.5"        // Manage document head in React webviews
+    },
+
+    // Development dependencies used during build and testing
+    "devDependencies": {
+        "@types/jest": "^29.5.14",            // TypeScript types for Jest
+        "@types/node": "^22.14.1",            // Node.js types for development
+        "@types/vscode": "^1.98.0",           // VSCode extension API types
+        "jest": "^29.7.0",                    // JavaScript testing framework
+        "ts-jest": "^29.3.2",                 // Jest transformer for TypeScript
+        "ts-loader": "^9.5.2",                // Webpack loader for TypeScript
+        "typescript": "^4.9.5",               // TypeScript compiler
+        "webpack": "^5.98.0",                 // Webpack bundler
+        "webpack-cli": "^5.1.4"               // Command line interface for Webpack
+    }
+}
