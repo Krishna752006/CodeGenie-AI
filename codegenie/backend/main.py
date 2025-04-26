@@ -19,7 +19,7 @@ model = AutoModelForCausalLM.from_pretrained( # Downloads and loads the whole mo
 
 app = FastAPI()
 
-# Add the CORS middleware to handle cross-origin requests
+# Add the CORS middleware to handle cross-origin requests i.e. between different ports
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Allow all domains to make requests to this API
@@ -31,7 +31,7 @@ app.add_middleware(
 
 class CodeRequest(BaseModel):
     prompt: str
-    max_tokens: int = 1000  # Increased max tokens
+    max_tokens: int = 1000
 
 @app.post("/generate")
 async def generate_code(request: CodeRequest):
