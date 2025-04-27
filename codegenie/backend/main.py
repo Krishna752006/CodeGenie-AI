@@ -29,21 +29,20 @@ app.add_middleware(
 
 class CodeRequest(BaseModel):
     prompt: str
-    max_tokens: int = 1000
+    max_tokens: int
 
 @app.post("/generate")
-async def generate_code(request: CodeRequest):
-    inputs = tokenizer(request.prompt, return_tensors="pt").to("cpu") # change to cuda if you have gpu
+async def generate_code(request: CodeRequest): # To Make the Network Communications b/w servers smoother using async 
+    inputs = tokenizer(request.prompt, return_tensors = "pt").to("cpu") # Returns in the form of Dictionary like {"id": ...}
+    # change to cuda if you have gpu
 
     outputs = model.generate(
-        **inputs, 
-        max_length=request.max_tokens,  
-        temperature=0.2,  # Lower temperature for deterministic responses
-        do_sample=True,
-        pad_token_id=model.config.eos_token_id  # Prevents early stopping
+        **inputs, # Gives the unpacked dictionary like id = [..], ..., etc.
+        max_length = request.max_tokens,
+        pad_token_id = model.config.eos_token_id  # Prevents early stopping and only stops when max_tokens are done or it encounters <EOS>
     )
 
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    response = tokenizer.decode(outputs[0], skip_special_tokens = True) # Special Tokens like <EOS> are removed
     return {"response": response}
 
 print("✅ FastAPI Server is ready!")
