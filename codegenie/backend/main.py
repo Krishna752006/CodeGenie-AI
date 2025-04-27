@@ -22,11 +22,9 @@ app = FastAPI()
 # Add the CORS middleware to handle cross-origin requests i.e. between different ports
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all domains to make requests to this API
-    allow_credentials=True, # Allow credentials such as cookies and authorization headers to be included in requests
-    allow_methods=["*"],  # Allow all HTTP methods: GET, POST, PUT, DELETE, etc.
-    allow_headers=["*"], # Allow all headers in the requests (e.g., content-type, authorization)
-    expose_headers=["*"] # Expose all response headers to the client (this is useful for debugging)
+    allow_origins = ["*"], # Allow all domains to make requests to this API
+    allow_credentials = True, # Allow credentials such as cookies and authorization headers to be included in requests so that API can recognize the user
+    allow_methods = ["*"]  # Allow all HTTP methods: GET, POST, PUT, DELETE, etc.
 )
 
 class CodeRequest(BaseModel):
@@ -52,3 +50,4 @@ print("✅ FastAPI Server is ready!")
 
 # Run the FastAPI server:
 # uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# We are using 2 servers since we are still developing the model and for better debugging purposes, we are using 2 ports.
