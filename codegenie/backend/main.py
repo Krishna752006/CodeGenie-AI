@@ -6,25 +6,19 @@ from transformers import AutoModelForCausalLM, AutoTokenizer # DL Library Develo
 
 Model_Name = "deepseek-ai/deepseek-coder-1.3b-instruct"  # Model Used
 Model_location = "./deepseek_model" # Model Location
+OFFLOAD_FOLDER = "./offload" # Loads the Model into ROM if RAM being used is completely filled. Only used for better the loading.
 
-# Remove comments if you have a gpu and change to cuda
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"   # Set device to GPU if available, otherwise CPU
+
 tokenizer = AutoTokenizer.from_pretrained(Model_Name, cache_dir = Model_location) # Downloads and loads the tokenizer, not the whole model.
 
-if torch.cuda.is_available():
-        model = AutoModelForCausalLM.from_pretrained(
-        Model_Name,
-        torch_dtype = torch.float16,  # Makes the usual values from float32 to float16, reducing the data thus making it faster for processing. But Works well only on GPUs.
-        device_map = "cuda",  # Runs the Model Entirely on GPU
-        offload_folder = "./offload", # Loads the Model into ROM if RAM being used is completely filled. Only used for better the loading.
-        cache_dir = Model_location
-    ).eval()
-else:
-    model = AutoModelForCausalLM.from_pretrained( # Downloads and loads the whole model.
-        Model_Name,
-        device_map = "cpu", # Runs the Model Entirely on CPU
-        offload_folder = "./offload",
-        cache_dir = Model_location
-    ).eval() # Disables training-specific behaviors like Droupout, etc.. and puts in evaluating mode.
+model = AutoModelForCausalLM.from_pretrained(
+    Model_Name,
+    torch_dtype = torch.float16 if DEVICE == "cuda" else torch.float32,  # Makes the usual values from float32 to float16, reducing the data thus making it faster for processing. But Works well only on GPUs.
+    device_map = DEVICE,
+    offload_folder = OFFLOAD_FOLDER,
+    cache_dir = Model_location
+).eval() # Disables training-specific behaviors like Droupout, etc.. and puts in evaluating mode.
 
 app = FastAPI()
 
@@ -42,11 +36,8 @@ class CodeRequest(BaseModel):
 
 @app.post("/generate")
 async def generate_code(request: CodeRequest): # To Make the Network Communications b/w servers smoother using async 
-    if torch.cuda.is_available():
-        inputs = tokenizer(request.prompt, return_tensors = "pt").to("cuda") # Returns in the form of Dictionary like {"id": ...}
-    else:
-        inputs = tokenizer(request.prompt, return_tensors = "pt").to("cpu") 
-
+    inputs = tokenizer(request.prompt, return_tensors = "pt").to(DEVICE) # Returns in the form of Dictionary like {"id": ...}
+    
     outputs = model.generate(
         **inputs, # Gives the unpacked dictionary like id = [..], ..., etc.
         max_length = request.max_tokens,
@@ -56,7 +47,7 @@ async def generate_code(request: CodeRequest): # To Make the Network Communicati
     response = tokenizer.decode(outputs[0], skip_special_tokens = True) # Special Tokens like <EOS> are removed
     return {"response": response}
 
-print("✅ FastAPI Server is ready!")
+print(f"✅ FastAPI Server is ready to be Running on {DEVICE}!")
 
 # Run the FastAPI server:
 # uvicorn main:app --host 0.0.0.0 --port 8000 --reload
