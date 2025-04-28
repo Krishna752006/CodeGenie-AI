@@ -38,7 +38,7 @@ const ChatBox = () => {
       // ✅ Type the Axios response
       const response = await axios.post<GenerateResponse>("http://127.0.0.1:8000/generate", {
         prompt,
-        max_tokens: 500
+        max_tokens: 10000
       });
 
       if (!response.data?.response) {
