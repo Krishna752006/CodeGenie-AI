@@ -47,10 +47,6 @@
             {
                 "command": "codegenie.disableAutocomplete",
                 "title": "CodeGenie: Disable Autocomplete"
-            },
-            {
-                "command": "codegenie.openPanel",
-                "title": "CodeGenie: Open AI Panel"
             }
         ]
     },
