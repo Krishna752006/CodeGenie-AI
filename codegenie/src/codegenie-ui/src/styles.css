@@ -91,10 +91,11 @@
   color: white;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, transform 0.2s ease;
 }
 
 .action-button:hover,
 .send-button:hover {
   background-color: #3a52c7;
+  transform: scale(1.05);
 }

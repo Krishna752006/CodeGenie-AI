@@ -2,15 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./styles.css";
 
-// ✅ Define the response structure expected from the backend
-interface GenerateResponse {
-  response: string;
-}
-
 const ChatBox = () => {
   const [messages, setMessages] = useState<{ text: string; sender: string }[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -36,7 +32,11 @@ const ChatBox = () => {
 
     try {
       // ✅ Type the Axios response
-      const response = await axios.post<GenerateResponse>("http://127.0.0.1:8000/generate", {
+      const API_URL = isOnline
+         ? "http://<rtx-4050-server-ip>:8000/generate"  // future use
+         : "http://127.0.0.1:8000/generate";            // local 
+
+      const response = await axios.post(API_URL, {
         prompt,
         max_tokens: 10000
       });
@@ -45,12 +45,11 @@ const ChatBox = () => {
         throw new Error("Empty response from server");
       }
 
-      const aiResponse = extractOnlyCode(response.data.response);
+      const aiResponse = extractOnlyCode(response.data.response,prompt);
       setMessages(prev => [...prev, { text: aiResponse, sender: "bot" }]);
     } catch (error) {
       console.error("API Error:", error);
-      setMessages(prev => [
-        ...prev,
+      setMessages(prev => [...prev,
         { text: "❌ Error: Failed to get response from AI backend", sender: "bot" }
       ]);
     }
@@ -58,7 +57,10 @@ const ChatBox = () => {
     setIsTyping(false);
   };
 
-  const extractOnlyCode = (response: string) => {
+  const extractOnlyCode = (response: string,prompt: string) => {
+    if (response.startsWith(prompt)) {
+      response = response.replace(prompt, "");
+    }
     return response
       .split("\n")
       .filter(line =>
@@ -86,7 +88,12 @@ const ChatBox = () => {
 
       <div className="chatbox-input-area">
         <button className="action-button">+</button>
-        <button className="action-button">@</button>
+        <button
+         className="action-button"
+         onClick={() => setIsOnline(prev => !prev)}
+         title={isOnline ? "Online Mode (Server)" : "Offline Mode (Local)"}>
+        {isOnline ? "📶" : "📴"}
+        </button>
         <input
           className="chatbox-input"
           type="text"
