@@ -16,7 +16,6 @@
     "react-helmet-async": "^2.0.5",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
-    "vscode": "^1.1.37",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -47,7 +46,6 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/mocha": "^10.0.10",
     "@types/node": "^22.14.1"
   }
 }
