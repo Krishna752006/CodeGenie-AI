@@ -24,6 +24,21 @@ export class CodeGenieViewProvider implements vscode.WebviewViewProvider {
 
     try {
       let html = fs.readFileSync(indexPath, "utf8"); // Reads the content in file. "utf8" means in the form of text and not bytes.
+      
+      if (!html.includes('Content-Security-Policy')) { // Ads the meta data cunsorning to Security Issues
+        html = html.replace(
+          /<head>/i,
+          `<head>
+            <meta http-equiv="Content-Security-Policy" 
+                  content="default-src 'none'; 
+                          connect-src http://127.0.0.1:8000 vscode-resource:; 
+                          img-src vscode-resource: https:; 
+                          script-src vscode-resource: 'unsafe-inline'; 
+                          style-src vscode-resource: 'unsafe-inline'; 
+                          font-src vscode-resource:;">
+          `
+        );
+      }
 
       html = html.replace(/(src|href)="(?!https?:\/\/)(.*?)"/g, (match, attr, src) => { // Finds all the local files which are in src or href i.e. not http or https and gets their file path into match, src or href into attr and resource path into src.
         const resourceUri = webviewView.webview.asWebviewUri(vscode.Uri.file(path.join(webviewDistPath, src))); // Converts these files into vscode resource so that they can easily be loaded without any trouble
