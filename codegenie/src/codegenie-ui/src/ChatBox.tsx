@@ -70,20 +70,20 @@ const ChatBox = () => {
     setIsTyping(false);
   };
 
-  const extractOnlyCode = (response: string,prompt: string) => {
+  const extractOnlyCode = (response: string, prompt: string) => {
     if (response.startsWith(prompt)) {
       response = response.replace(prompt, "");
     }
     return response
       .split("\n")
       .filter(line =>
-        !/^[/\*]+/.test(line.trim()) &&
+        !/^[/*]+/.test(line.trim()) &&
         !/^\s*(?:This|Explanation|The function)/i.test(line.trim()) &&
         line.trim() !== ""
       )
       .join("\n")
       .trim();
-  };
+  };  
 
   return (
     <div className="chatbox-container">
