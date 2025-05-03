@@ -147,7 +147,7 @@ async function fetchAICompletionRaw(prompt: string): Promise<string> {
     try {
         const response = await axios.post("http://127.0.0.1:8000/generate", {
             prompt,
-            max_tokens: 10000
+            max_tokens: 1000
         });
 
         let aiResponse = response.data.response || ""; // If the AI data is undefined, null, false, 0 or nan, it changes to Empty String i.e. ""

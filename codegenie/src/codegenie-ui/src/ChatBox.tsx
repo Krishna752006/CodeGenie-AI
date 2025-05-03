@@ -51,7 +51,7 @@ const ChatBox = () => {
 
       const response = await axios.post(API_URL, {
         prompt,
-        max_tokens: 10000
+        max_tokens: 1000
       });
 
       if (!response.data?.response) {
