@@ -122,10 +122,8 @@ async function generateCodeFromPrompt(editor: vscode.TextEditor, prompt: string)
     try {
         const aiResponse = await fetchAICompletion(prompt);
 
-        if (!aiResponse) {
-            vscode.window.showErrorMessage("❌ No code generated.");
-            statusBarItem.text = "$(alert) CodeGenie: No response";
-            return;
+        if (aiResponse === "") {
+            throw new Error("No response from AI backend");
         }
 
         editor.edit(editBuilder => { // Edits the Editor by inserting it there

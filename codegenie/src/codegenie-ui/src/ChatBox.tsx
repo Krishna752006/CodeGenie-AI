@@ -62,9 +62,12 @@ const ChatBox = () => {
       setMessages(prev => [...prev, { text: aiResponse, sender: "bot" }]);
     } catch (error) {
       console.error("API Error:", error);
-      setMessages(prev => [...prev,
-        { text: "❌ Error: Failed to get response from AI backend", sender: "bot" }
-      ]);
+    
+      const errorMessage = isOnline
+        ? "❌ Error: Failed to get response from the RTX server"
+        : "❌ Error: Failed to get response from local AI backend";
+    
+      setMessages(prev => [...prev, { text: errorMessage, sender: "bot" }]);
     }
 
     setIsTyping(false);
