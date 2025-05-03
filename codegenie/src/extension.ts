@@ -188,39 +188,3 @@ export function deactivate() {
     console.log("🛑 CodeGenie Extension Deactivated");
     statusBarItem.dispose();
 }
-
-/*
-For Later Use
-
-let generateFromComment = vscode.commands.registerCommand('codegenie.generateFromComment', async () => {
-        if (!EXTENSION_STATUS) {
-            vscode.window.showErrorMessage("❌ Autocomplete is disabled.");
-            return;
-        }
-
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('❌ Open a file to use CodeGenie.');
-            return;
-        }
-
-        const document = editor.document;
-        const lastComment = findLastComment(document);
-        if (!lastComment) {
-            vscode.window.showErrorMessage("❌ No comment found.");
-            return;
-        }
-
-        await generateCodeFromPrompt(editor, lastComment);
-
-function findLastComment(document: vscode.TextDocument): string | null {
-    for (let i = document.lineCount - 1; i >= 0; i--) {
-        const text = document.lineAt(i).text.trim();
-        if (text.startsWith("//") || text.startsWith("#")) {
-            return text.replace(/^[/#]+/, "").trim();
-        }
-    }
-    return null;
-}
-
-*/
