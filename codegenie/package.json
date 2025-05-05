@@ -41,6 +41,10 @@
                 "title": "CodeGenie: Generate Code"
             },
             {
+                "command": "codegenie.generateFromComment",
+                "title": "CodeGenie: Generate from Last Comment"
+            },
+            {
                 "command": "codegenie.enableCodeGenie",
                 "title": "CodeGenie: Enable CodeGenie"
             },

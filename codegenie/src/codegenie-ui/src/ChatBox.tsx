@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { fetchAICompletion } from "./api";
 import "./styles.css";
 import { IoSendOutline, IoAddCircleOutline } from "react-icons/io5";
 import { HiDesktopComputer } from "react-icons/hi";
@@ -21,24 +21,59 @@ const ChatBox = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  function extractCodeBlocks(text: string) {
+    const codeRegex = /```(?:[\w]*)?\n([\s\S]*?)```/g;
+    let match;
+    const codeBlocks = [];
+    while ((match = codeRegex.exec(text)) !== null) {
+      codeBlocks.push(match[1].trim());
+    }
+    return codeBlocks;
+  }
+  
+  function removeCodeBlocks(text: string) {
+    return text.replace(/```(?:[\w]*)?\n[\s\S]*?```/g, "").trim();
+  }
+
   const renderMessage = (msg: Message) => {
     if (msg.sender === "bot") {
-      const { explanation, code } = extractCodeAndExplanation(msg.text);
-
+      const codeBlocks = extractCodeBlocks(msg.text);
+      const displayText = removeCodeBlocks(msg.text);
+  
       return (
         <div className="bot-message">
-          {explanation && <p>{explanation}</p>}
-          {code && (
-            <SyntaxHighlighter language="tsx" style={darcula}>
-              {code}
-            </SyntaxHighlighter>
-          )}
+          {displayText && <pre>{displayText}</pre>}
+          {codeBlocks.map((code, idx) => (
+            <div className="code-block" key={idx}>
+              <SyntaxHighlighter
+                language="tsx"
+                style={darcula}
+                wrapLongLines={true}
+                customStyle={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              >
+                {code}
+              </SyntaxHighlighter>
+              <div className="code-actions">
+                <button onClick={() => navigator.clipboard.writeText(code)}>📋 Copy</button>
+                <button
+                  onClick={() => {
+                    const vscode = (window as any).acquireVsCodeApi?.();
+                    if (vscode) {
+                      vscode.postMessage({ type: "insertCode", code });
+                    }
+                  }}
+                >
+                  📥 Insert
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       );
     }
-
+  
     return <pre className="user-message">{msg.text}</pre>;
-  };
+  };  
 
   const scrollToBottom = () => {
     if (chatRef.current) {
@@ -73,86 +108,51 @@ const ChatBox = () => {
 
   const sendMessage = async () => {
     if (!input.trim()) return;
-
+  
     const prompt = input.trim();
     setMessages((prev) => [...prev, { text: prompt, sender: "user" }]);
     setInput("");
     setIsTyping(true);
-
-    await sendPromptToAI(prompt, setMessages, isOnline);
-
-    setIsTyping(false);
+  
+    try {
+      const aiResponse = await fetchAICompletion(prompt, isOnline);
+      setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
+    } catch (error: any) {
+      setMessages((prev) => [...prev, { text: error.message, sender: "bot" }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
-
-  function extractOnlyCode(response: string): string {
-    const codeRegex = /```(?:[\w]*)?\n?([\s\S]*?)```/;
-    const match = response.match(codeRegex);
-    return match ? match[1].trim() : response.trim();
-  }
-
-  function extractCodeAndExplanation(text: string): {
-    explanation: string;
-    code: string;
-  } {
-    const codeRegex = /```(?:[\w]*)?\n?([\s\S]*?)```/;
-    const match = text.match(codeRegex);
-    const code = match ? match[1].trim() : "";
-
-    const explanation = match ? text.replace(match[0], "").trim() : text.trim();
-
-    return { explanation, code };
-  }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
+  
     const reader = new FileReader();
-
+  
     reader.onload = async () => {
       const fileContent = reader.result as string;
-
+  
       setMessages((prev) => [
         ...prev,
         { text: `📎 Attached: ${file.name}\n`, sender: "user" },
       ]);
-
+  
       const prompt = `User uploaded file: ${file.name}\n\n${fileContent}`;
-      await sendPromptToAI(prompt, setMessages, isOnline);
+      setIsTyping(true);
+  
+      try {
+        const aiResponse = await fetchAICompletion(prompt, isOnline);
+        setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
+      } catch (error: any) {
+        setMessages((prev) => [...prev, { text: error.message, sender: "bot" }]);
+      } finally {
+        setIsTyping(false);
+      }
     };
-
+  
     reader.readAsText(file);
-  };
-
-  async function sendPromptToAI(
-    prompt: string,
-    setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
-    isOnline: boolean
-  ) {
-    const API_URL = isOnline
-      ? "http://<rtx-4050-server-ip>:8000/generate"
-      : "http://127.0.0.1:8000/generate";
-
-    try {
-      const response = await axios.post(API_URL, {
-        prompt,
-        max_tokens: 1000,
-      });
-
-      if (!response.data?.response) throw new Error("Empty response from server");
-
-      const aiResponse = extractOnlyCode(response.data.response);
-      setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
-    } catch (error) {
-      console.error("API Error:", error);
-
-      const errorMessage = isOnline
-        ? "❌ Error: Failed to get response from the RTX server"
-        : "❌ Error: Failed to get response from local AI backend";
-
-      setMessages((prev) => [...prev, { text: errorMessage, sender: "bot" }]);
-    }
-  }
+  };  
 
   return (
     <div className="chatbox-container">

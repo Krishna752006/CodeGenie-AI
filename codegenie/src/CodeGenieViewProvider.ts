@@ -31,7 +31,7 @@ export class CodeGenieViewProvider implements vscode.WebviewViewProvider {
           `<head>
             <meta http-equiv="Content-Security-Policy" 
                   content="default-src 'none'; 
-                          connect-src http://127.0.0.1:8000 vscode-resource:; 
+                          connect-src http://127.0.0.1:8000 http://<rtx-4050-server-ip>:8000 vscode-resource:; 
                           img-src vscode-resource: https:; 
                           script-src vscode-resource: 'unsafe-inline'; 
                           style-src vscode-resource: 'unsafe-inline'; 
@@ -46,6 +46,21 @@ export class CodeGenieViewProvider implements vscode.WebviewViewProvider {
       });
 
       webviewView.webview.html = html;
+
+      webviewView.webview.onDidReceiveMessage(async (message) => {
+        if (message.type === "insertCode") {
+          const editor = vscode.window.activeTextEditor;
+          if (!editor) {
+            vscode.window.showErrorMessage("No active editor to insert code.");
+            return;
+          }
+          await editor.edit(editBuilder => {
+            editBuilder.insert(editor.selection.active, message.code);
+          });
+          vscode.window.showInformationMessage("✅ Code inserted from CodeGenie!");
+        }
+      });
+
     } catch (error: any) {
       console.error("❌ Failed to load Webview:", error);
       webviewView.webview.html = `<h1>Error loading UI</h1><p>${error.message}</p>`;
