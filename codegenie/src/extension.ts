@@ -4,6 +4,7 @@ import { CodeGenieViewProvider } from "./CodeGenieViewProvider";
 
 let isOnline = false;
 let EXTENSION_STATUS = true;
+let inlineSuggestionRequested = false;
 let statusBarItem: vscode.StatusBarItem;
 let provider: CodeGenieViewProvider;
 
@@ -71,7 +72,12 @@ export function activate(context: vscode.ExtensionContext) {
          await generateCodeFromPrompt(editor, lastComment);
     });
 
-    context.subscriptions.push(generateCode, enableCodeGenie, disableCodeGenie, generateFromComment);
+    let triggerInlineCompletion = vscode.commands.registerCommand('codegenie.triggerInlineCompletion', async () => {
+        inlineSuggestionRequested = true;
+        await vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
+    });
+
+    context.subscriptions.push(generateCode, generateFromComment,triggerInlineCompletion, enableCodeGenie, disableCodeGenie);
 
     const inlineProvider: vscode.InlineCompletionItemProvider = {
         provideInlineCompletionItems: async (
@@ -82,7 +88,10 @@ export function activate(context: vscode.ExtensionContext) {
         ): Promise<vscode.InlineCompletionItem[]> => {
             // Check if the extension is enabled
             if (!EXTENSION_STATUS) return [];
-    
+            
+            if (!inlineSuggestionRequested) return [];
+            inlineSuggestionRequested = false; 
+
             let textBeforeCursor = document.getText(new vscode.Range(position.with(undefined, 0), position)).trim();
             if (!textBeforeCursor) {
                 for (let line = position.line - 1; line >= 0; line--) {

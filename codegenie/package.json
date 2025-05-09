@@ -51,6 +51,17 @@
             {
                 "command": "codegenie.disableCodeGenie",
                 "title": "CodeGenie: Disable CodeGenie"
+            },
+            {
+                "command": "codegenie.triggerInlineCompletion",
+                "title": "CodeGenie: Trigger Inline Completion"
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "codegenie.triggerInlineCompletion",
+                "key": "ctrl+alt+g",
+                "when": "editorTextFocus"
             }
         ]
     },
