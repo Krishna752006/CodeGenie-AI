@@ -1,5 +1,5 @@
 .chatbox-container {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: #181818;
@@ -7,7 +7,6 @@
   font-family: 'Segoe UI', sans-serif;
   padding: 12px;
   box-sizing: border-box;
-  overflow: hidden; /* Prevent container from being scrollable */
 }
 
 .chatbox-history {
@@ -16,7 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100vh - 160px); /* Ensure space for input and padding */
+  overflow-y: auto;
 }
 
 .message-bubble {
@@ -140,6 +139,8 @@
 
 .chatbox-input-area {
   display: flex;
+  position: sticky;
+  bottom: 0;
   align-items: center;
   gap: 10px;
   padding: 12px;
@@ -196,5 +197,5 @@ body {
 
 /* Ensure the body does not show horizontal scrollbars */
 html {
-  overflow-x: hidden;
+  overflow-x: auto;
 }

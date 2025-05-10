@@ -157,13 +157,6 @@ async function generateCodeFromPrompt(editor: vscode.TextEditor, prompt: string)
             editBuilder.insert(editor.selection.active, `\n${aiResponse}\n`); //Inserts at the cursor location in the editor
         });
 
-        if (provider && provider._view) {
-            provider._view.webview.postMessage({
-                type: "aiResponse",
-                content: rawResponse
-            });
-        }
-
         vscode.window.showInformationMessage("✅ Code inserted!");
         updateStatusBar();
     } catch (error) {
@@ -186,17 +179,11 @@ function removeQueryFromResponse(response: string, query: string): string {
 }
 
 function extractOnlyCode(response: string): string {
-    let cleaned = response
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line !== '.' && line !== '')
-        .join('\n')
-        .trim();
-
-    const codeBlocks = [];
-        const codeBlockRegex = /``````/g;
+    const codeBlockRegex = /```(?:[\w]*)\n([\s\S]*?)```/g;
         let match;
-        while ((match = codeBlockRegex.exec(cleaned)) !== null) {
+        const codeBlocks = [];
+    
+        while ((match = codeBlockRegex.exec(response)) !== null) {
             codeBlocks.push(match[1].trim());
         }
 
@@ -204,8 +191,9 @@ function extractOnlyCode(response: string): string {
             return codeBlocks.join('\n\n');
         }
 
-        return cleaned
+        return response
             .split('\n')
+            .map(line => line.trim())
             .filter(line =>
                 line &&
                 !line.startsWith('#') &&
