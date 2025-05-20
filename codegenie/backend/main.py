@@ -47,6 +47,33 @@ async def generate_code(request: CodeRequest): # To Make the Network Communicati
     response = tokenizer.decode(outputs[0], skip_special_tokens = True) # Special Tokens like <EOS> are removed
     return {"response": response}
 
+@app.post("/debug")
+async def debug_code(request: CodeRequest):
+
+    code_to_debug = request.prompt.strip()
+    enhanced_prompt = (
+        "Analyze the following code. "
+        "List ONLY the syntax or logical errors (if any) found in the code. "
+        "If the code is correct, reply with 'No errors found.'\n\n"
+        f"Code:\n{code_to_debug}"  
+    )
+
+    inputs = tokenizer(enhanced_prompt, return_tensors="pt").to(DEVICE)
+    outputs = model.generate(
+    **inputs,
+    max_length = request.max_tokens  ,
+    pad_token_id = model.config.eos_token_id
+    )
+
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    
+    if full_output.startswith(enhanced_prompt):
+        response = full_output[len(enhanced_prompt):].lstrip("\n\r ")
+    else:
+        response = full_output
+    return {"response": response}
+
 print(f"✅ FastAPI Server is ready to be Running on {DEVICE}!")
 
 # Run the FastAPI server:

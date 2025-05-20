@@ -4,6 +4,7 @@ import { CodeGenieViewProvider } from "./CodeGenieViewProvider";
 
 let isOnline = false;
 let EXTENSION_STATUS = true;
+const debugOutputChannel = vscode.window.createOutputChannel("CodeGenie Debug");
 let inlineSuggestionRequested = false;
 let statusBarItem: vscode.StatusBarItem;
 let provider: CodeGenieViewProvider;
@@ -77,7 +78,49 @@ export function activate(context: vscode.ExtensionContext) {
         await vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
     });
 
-    context.subscriptions.push(generateCode, generateFromComment,triggerInlineCompletion, enableCodeGenie, disableCodeGenie);
+    let debugSelectedCode = vscode.commands.registerCommand('codegenie.debugSelectedCode', async () => {
+        
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('Open a file to use CodeGenie.');
+            return;
+        }
+
+        const selection = editor.selection;
+        const code = editor.document.getText(selection);
+        if (!code.trim()) {
+            vscode.window.showWarningMessage('Please select some code to debug.');
+            return;
+        }
+        statusBarItem.text = "$(sync~spin) CodeGenie: Debugging...";
+    
+        try {
+            const response = await fetch('http://127.0.0.1:8000/debug', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: code, max_tokens: 1000 })
+            });
+
+            const result = await response.json();
+            debugOutputChannel.clear();
+            if (result.response) {
+                vscode.window.showInformationMessage(result.response);
+                debugOutputChannel.appendLine(result.response);
+                debugOutputChannel.show(true);
+                statusBarItem.text = "$(check) CodeGenie: Ready";
+            } else {
+                debugOutputChannel.appendLine("No debug info received.");
+                debugOutputChannel.show(true);
+                statusBarItem.text = "$(alert) CodeGenie: No response";
+            }
+        } catch (error) {
+            debugOutputChannel.appendLine(`Error debugging code: ${error}`);
+            debugOutputChannel.show(true);
+            statusBarItem.text = "$(error) CodeGenie: Error";
+        }
+    });    
+    
+    context.subscriptions.push(generateCode, generateFromComment, triggerInlineCompletion,debugSelectedCode, enableCodeGenie, disableCodeGenie);
 
     const inlineProvider: vscode.InlineCompletionItemProvider = {
         provideInlineCompletionItems: async (
