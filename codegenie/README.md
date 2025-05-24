@@ -10,7 +10,7 @@ Navigate to the `codegenie` directory and install the required backend dependenc
 
 ```bash
 cd codegenie
-pip install fastapi uvicorn transformers torch accelerate safetensors huggingface_hub
+pip install -r requirements.txt
 ```
 
 ---
