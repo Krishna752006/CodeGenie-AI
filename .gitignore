@@ -8,8 +8,15 @@ codegenie/backend/deepseek_model/
 codegenie/node_modules/
 codegenie/package-lock.json
 codegenie/src/codegenie-ui/node_modules/
+codegenie/src/codegenie-ui/build/
 codegenie/src/codegenie-ui/package-lock.json
 
 # macOS system files
 .DS_Store
 **/.DS_Store
+
+# Environment Files
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
