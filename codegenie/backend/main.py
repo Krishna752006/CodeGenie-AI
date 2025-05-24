@@ -66,12 +66,7 @@ async def debug_code(request: CodeRequest):
     )
 
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
     
-    if full_output.startswith(enhanced_prompt):
-        response = full_output[len(enhanced_prompt):].lstrip("\n\r ")
-    else:
-        response = full_output
     return {"response": response}
 
 print(f"✅ FastAPI Server is ready to be Running on {DEVICE}!")
