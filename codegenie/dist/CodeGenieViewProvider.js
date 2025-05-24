@@ -22,6 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CodeGenieViewProvider = void 0;
 const vscode = __importStar(require("vscode"));
@@ -30,24 +39,24 @@ const fs = __importStar(require("fs"));
 class CodeGenieViewProvider {
     constructor(context) {
         this.context = context;
-    }
+    } //Context helps TypeScript access other folders but it also provides storage, lifecycle management, and utilities for building a clean extension.
     resolveWebviewView(webviewView, context, _token) {
         this._view = webviewView;
         webviewView.webview.options = {
             enableScripts: true,
             localResourceRoots: [
-                vscode.Uri.file(path.join(this.context.extensionPath, "src", "codegenie-ui", "build")),
+                vscode.Uri.file(path.join(this.context.extensionPath, "src", "codegenie-ui", "build")), // The WebView is allowed to load files from src/codegenie-ui/build folder 
             ],
         };
-        const webviewDistPath = path.join(this.context.extensionPath, "src", "codegenie-ui", "build");
-        const indexPath = path.join(webviewDistPath, "index.html");
+        const webviewDistPath = path.join(this.context.extensionPath, "src", "codegenie-ui", "build"); // Builds absolute file paths to your Webview's frontend files
+        const indexPath = path.join(webviewDistPath, "index.html"); // This creates the full path to the index.html file
         try {
-            let html = fs.readFileSync(indexPath, "utf8");
-            if (!html.includes('Content-Security-Policy')) {
+            let html = fs.readFileSync(indexPath, "utf8"); // Reads the content in file. "utf8" means in the form of text and not bytes.
+            if (!html.includes('Content-Security-Policy')) { // Ads the meta data cunsorning to Security Issues
                 html = html.replace(/<head>/i, `<head>
             <meta http-equiv="Content-Security-Policy" 
                   content="default-src 'none'; 
-                          connect-src http://127.0.0.1:8000 vscode-resource:; 
+                          connect-src http://127.0.0.1:8000 http://<rtx-4050-server-ip>:8000 vscode-resource:; 
                           img-src vscode-resource: https:; 
                           script-src vscode-resource: 'unsafe-inline'; 
                           style-src vscode-resource: 'unsafe-inline'; 
@@ -55,10 +64,29 @@ class CodeGenieViewProvider {
           `);
             }
             html = html.replace(/(src|href)="(?!https?:\/\/)(.*?)"/g, (match, attr, src) => {
-                const resourceUri = webviewView.webview.asWebviewUri(vscode.Uri.file(path.join(webviewDistPath, src)));
-                return `${attr}="${resourceUri}"`;
+                const resourceUri = webviewView.webview.asWebviewUri(vscode.Uri.file(path.join(webviewDistPath, src))); // Converts these files into vscode resource so that they can easily be loaded without any trouble
+                return `${attr}="${resourceUri}"`; // returns like src="vscode-resource://extension-folder/main.js"
             });
             webviewView.webview.html = html;
+            webviewView.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
+                if (message.type === "insertCode") {
+                    let editor = vscode.window.activeTextEditor;
+                    if (!editor) {
+                        vscode.window.showErrorMessage("No active editor.");
+                        return;
+                    }
+                    // Focus without changing cursor
+                    yield vscode.window.showTextDocument(editor.document, editor.viewColumn);
+                    // Get fresh reference
+                    editor = vscode.window.activeTextEditor;
+                    if (!editor)
+                        return;
+                    // Insert code
+                    yield editor.edit(editBuilder => {
+                        editBuilder.insert(editor.selection.active, message.code);
+                    });
+                }
+            }));
         }
         catch (error) {
             console.error("❌ Failed to load Webview:", error);
@@ -67,4 +95,4 @@ class CodeGenieViewProvider {
     }
 }
 exports.CodeGenieViewProvider = CodeGenieViewProvider;
-CodeGenieViewProvider.viewType = "codegenieView";
+CodeGenieViewProvider.viewType = "codegenieView"; //This line is just the id of the webview and just used by package.json to identify the file

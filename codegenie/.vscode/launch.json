@@ -1,21 +1,17 @@
-// A launch configuration that compiles the extension and then opens it inside a new window
-// Use IntelliSense to learn about possible attributes.
-// Hover to view descriptions of existing attributes.
-// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+// This file configures how VS Code launches and debugs your extension during development.
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Run Extension",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			],
-			"outFiles": [
-				"${workspaceFolder}/dist/**/*.js"
-			],
-			"preLaunchTask": "${defaultBuildTask}"
-		}
-	]
+  "version": "0.2.0", // Version of the debug configuration format
+  "configurations": [
+    {
+      "name": "Run Extension", // Name shown in the VS Code debug dropdown
+      "type": "extensionHost", // Debug type to launch a VS Code Extension Development Host
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}" // Argument specifying the folder containing the extension to load (current workspace)
+      ],
+
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"], // Location of compiled JavaScript files
+      "preLaunchTask": "${defaultBuildTask}" // Task to run before starting the debugger
+    }
+  ]
 }

@@ -1,18 +1,17 @@
-// See https://go.microsoft.com/fwlink/?LinkId=733558
-// for the documentation about the tasks.json format
+// Tasks that run before the new VS Code Debugging Environment is created
 {
-	"version": "2.0.0",
+	"version": "2.0.0", // Version of Task Configuration Schema
 	"tasks": [
 		{
             "label": "watch",
-            "dependsOn": [
+            "dependsOn": [ // Since it is Default Build Task, it will run the below tasks Automatically
                 "npm: watch:tsc",
                 "npm: watch:esbuild"
             ],
             "presentation": {
-                "reveal": "never"
+                "reveal": "never" // Never Show Terminal Output
             },
-            "group": {
+            "group": { // Default Build Task 
                 "kind": "build",
                 "isDefault": true
             }
@@ -41,25 +40,6 @@
                 "group": "watch",
                 "reveal": "never"
             }
-        },
-		{
-			"type": "npm",
-			"script": "watch-tests",
-			"problemMatcher": "$tsc-watch",
-			"isBackground": true,
-			"presentation": {
-				"reveal": "never",
-				"group": "watchers"
-			},
-			"group": "build"
-		},
-		{
-			"label": "tasks: watch-tests",
-			"dependsOn": [
-				"npm: watch",
-				"npm: watch-tests"
-			],
-			"problemMatcher": []
-		}
+        }
 	]
 }
