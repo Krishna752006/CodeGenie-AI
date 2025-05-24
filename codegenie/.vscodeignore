@@ -1,12 +1,12 @@
+# List of files and folders to exclude from the final extension package
+
 .vscode/**
-.vscode-test/**
 out/**
 node_modules/**
 src/**
 .gitignore
 .yarnrc
 esbuild.js
-vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs
 **/*.map
