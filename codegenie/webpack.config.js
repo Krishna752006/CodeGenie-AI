@@ -2,20 +2,17 @@
  * Webpack config to bundle TypeScript code for a VS Code extension.
  * - Compiles .ts files into dist/extension.js
  * - Webpack is needed because VS Code runs .js, not .ts
- * - This setup defines how Webpack should behave when you run `npm run build`
  */
 
-// A configuration file is a file used to define settings and preferences for how software or tools should run.
-//  It tells a program how to behave, what options to use, where to find files.
+// Converts .ts to.js when "npm run compile" is run
 
-const path = require("path"); // Node module for working with file paths
+const path = require("path");
 
 module.exports = {
     mode: "development",        // Keep output readable (not minified)
     target: "node",             // Bundle for Node.js (not browser)
 
-    entry: "./src/extension.ts", // Entry point of the app
-
+    entry: "./src/extension.ts",
     output: {
         path: path.resolve(__dirname, "dist"), // Output directory
         filename: "extension.js",              // Output filename
@@ -37,6 +34,6 @@ module.exports = {
     },
 
     externals: {
-        vscode: "commonjs vscode", // Don't bundle VS Code API
+        vscode: "commonjs vscode",
     },
 };
