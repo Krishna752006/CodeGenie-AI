@@ -4,7 +4,7 @@
  * - Webpack is needed because VS Code runs .js, not .ts
  */
 
-// Converts .ts to.js when "npm run compile" is run
+// Converts Webpack .ts to.js when "npm run build" is run
 
 const path = require("path");
 

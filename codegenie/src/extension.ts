@@ -9,7 +9,7 @@ let inlineSuggestionRequested = false;
 let statusBarItem: vscode.StatusBarItem;
 let provider: CodeGenieViewProvider;
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext) { // This file exports one function, activate, which is called the very first time the extension is activated.
     console.log("✅ CodeGenie Extension Activated!");
 
     provider = new CodeGenieViewProvider(context);

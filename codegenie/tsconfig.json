@@ -1,15 +1,15 @@
-// This file is like an instruction manual for how TypeScript should compile and process the code.
+// This file is that tells how to compile and process the code when compiled through "npm run compile"
 
 {
-    "compilerOptions": {
-      "jsx": "react-jsx",
-      "esModuleInterop": true,
-      "target": "es6",
-      "module": "commonjs",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "types": ["node", "jest"],
-      "lib": ["ES6", "DOM"],
-      "strict": true
-      }
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "target": "es6",             // Compile to ES6 JavaScript
+    "module": "commonjs",        // Use CommonJS (required for VS Code extensions)
+    "outDir": "./dist",          // Output directory for compiled JS
+    "rootDir": "./src",          // Source files location
+    "types": ["node", "jest"],   // Include Node and Jest types
+    "lib": ["ES6", "DOM"],       // Use ES6 and DOM type definitions
+    "strict": true               // Enable strict type checking
+  }
 }

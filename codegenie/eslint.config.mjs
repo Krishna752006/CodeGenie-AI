@@ -1,51 +1,32 @@
-/**
- * ESLint configuration for TypeScript files.
- * 
- * This setup enforces code quality, consistent style, and best practices
- * across the project. It mainly focuses on basic TypeScript linting
- * and some simple rules like requiring curly braces and semicolons.
- */
+// This file helps check your TypeScript code for mistakes and keeps the style consistent.
 
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
 export default [
     {
-        // Tell ESLint to apply this config to all .ts files
-        files: ["**/*.ts"],
+        files: ["**/*.ts"], // Apply these settings to all .ts files
     },
     {
-        // Add the TypeScript ESLint plugin so we can use its rules
         plugins: {
-            "@typescript-eslint": typescriptEslint,
+            "@typescript-eslint": typescriptEslint, // Add extra TypeScript-specific rules
         },
 
         languageOptions: {
-            parser: tsParser,           // Use the TypeScript parser instead of the default one
-            ecmaVersion: 2022,           // Understand the latest JavaScript features
-            sourceType: "module",        // Assume we're using import/export syntax
+            parser: tsParser,         // Use this parser so ESLint can understand TypeScript
+            ecmaVersion: 2022,        // Let ESLint understand modern JavaScript (2022 features)
+            sourceType: "module",     // Tell ESLint we are using import/export
         },
 
-        // Define all the linting rules we care about
         rules: {
-            // Enforce naming conventions for imported identifiers
             "@typescript-eslint/naming-convention": ["warn", {
                 selector: "import",
                 format: ["camelCase", "PascalCase"],
             }],
-
-            // Always use curly braces for blocks (even one-liners)
-            curly: "warn",
-
-            // Always use === and !== instead of == and !=
-            eqeqeq: "warn",
-
-            // Don't allow throwing plain values like strings or numbers
-            // Always throw an Error object
-            "no-throw-literal": "warn",
-
-            // Require semicolons at the end of statements
-            semi: "warn",
+            curly: "warn",                // Always use curly braces {} with if/else and loops
+            eqeqeq: "warn",              // Use === and !== instead of == and !=
+            "no-throw-literal": "warn",  // Don’t throw strings or numbers — always use Error objects
+            semi: "warn",                // Make sure to end lines with a semicolon ;
         },
     },
 ];

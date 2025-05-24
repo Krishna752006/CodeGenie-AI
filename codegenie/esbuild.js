@@ -3,12 +3,6 @@ const esbuild = require("esbuild");
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
-/**
- * esbuild plugin for improved error reporting.
- * Formats errors so they are easier to match in IDEs or CI systems.
- * 
- * @type {import('esbuild').Plugin}
- */
 const esbuildProblemMatcherPlugin = {
 	name: 'esbuild-problem-matcher',
 
