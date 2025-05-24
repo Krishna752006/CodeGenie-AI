@@ -70,21 +70,30 @@ class CodeGenieViewProvider {
             webviewView.webview.html = html;
             webviewView.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
                 if (message.type === "insertCode") {
-                    let editor = vscode.window.activeTextEditor;
-                    if (!editor) {
-                        vscode.window.showErrorMessage("No active editor.");
-                        return;
+                    try {
+                        let editor = vscode.window.activeTextEditor; // Try to get the last active text editor
+                        if (!editor) {
+                            vscode.window.showErrorMessage("No active editor. Please open a file to insert code.");
+                            return;
+                        }
+                        yield vscode.window.showTextDocument(editor.document, editor.viewColumn, false); // Always focus the editor before inserting
+                        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                            editor = vscode.window.activeTextEditor; // Get the (now) active editor again
+                            if (!editor) {
+                                vscode.window.showErrorMessage("No active editor after focusing.");
+                                return;
+                            }
+                            const success = yield editor.edit(editBuilder => {
+                                editBuilder.insert(editor.selection.active, message.code);
+                            });
+                            if (!success) {
+                                vscode.window.showErrorMessage("Failed to insert code. Please try again.");
+                            }
+                        }), 10); // 10ms delay to ensure focus
                     }
-                    // Focus without changing cursor
-                    yield vscode.window.showTextDocument(editor.document, editor.viewColumn);
-                    // Get fresh reference
-                    editor = vscode.window.activeTextEditor;
-                    if (!editor)
-                        return;
-                    // Insert code
-                    yield editor.edit(editBuilder => {
-                        editBuilder.insert(editor.selection.active, message.code);
-                    });
+                    catch (err) {
+                        vscode.window.showErrorMessage("Error inserting code: " + err.message);
+                    }
                 }
             }));
         }

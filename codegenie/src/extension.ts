@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) { // This file export
     );
 
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left); // Creates a Status Bar Item to the left side
-    updateStatusBar(); // Below Function is there
+    updateStatusBar();
     statusBarItem.show(); // It tells the VS Code to Display the Statusbar item.
 
     let generateCode = vscode.commands.registerCommand('codegenie.getCode', async () => { // This will generate code and put inside an open file

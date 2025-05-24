@@ -49,7 +49,7 @@ function activate(context) {
     vscode.window.registerWebviewViewProvider(CodeGenieViewProvider_1.CodeGenieViewProvider.viewType, provider) //This automatically load resolveWebviewView method inside of CodeGenieViewProvider
     );
     statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left); // Creates a Status Bar Item to the left side
-    updateStatusBar(); // Below Function is there
+    updateStatusBar();
     statusBarItem.show(); // It tells the VS Code to Display the Statusbar item.
     let generateCode = vscode.commands.registerCommand('codegenie.getCode', () => __awaiter(this, void 0, void 0, function* () {
         if (!EXTENSION_STATUS) {

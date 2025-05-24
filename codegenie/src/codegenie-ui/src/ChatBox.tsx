@@ -8,6 +8,7 @@ import { BsCopy } from "react-icons/bs";
 import { LuFileCode2 } from "react-icons/lu";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ReactMarkdown from 'react-markdown';
 
 type Message = {
   text: string;
@@ -22,13 +23,17 @@ const ChatBox = () => {
   const chatRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-  function extractCodeBlocks(text: string) {
-    const codeRegex = /```(?:[\w]*)?\n([\s\S]*?)```/g;
+  function extractCodeBlocksWithLang(text: string) {
+    const codeRegex = /```(\w+)?\n([\s\S]*?)```/g;
     let match;
     const codeBlocks = [];
     while ((match = codeRegex.exec(text)) !== null) {
-      codeBlocks.push(match[1].trim());
+      codeBlocks.push({
+        lang: match[1] || "text",
+        code: match[2].trim()
+      });
     }
     return codeBlocks;
   }
@@ -39,16 +44,22 @@ const ChatBox = () => {
 
   const renderMessage = (msg: Message) => {
     if (msg.sender === "bot") {
-      const codeBlocks = extractCodeBlocks(msg.text);
+      const codeBlocks = extractCodeBlocksWithLang(msg.text);
       const displayText = removeCodeBlocks(msg.text);
   
       return (
         <div className="bot-message">
-          {displayText && <pre>{displayText}</pre>}
-          {codeBlocks.map((code, idx) => (
+        {displayText && (
+            <div className="markdown" style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+              <ReactMarkdown>
+                {displayText}
+              </ReactMarkdown>
+            </div>
+        )}
+          {codeBlocks.map(({ lang, code }, idx) => (
             <div className="code-block" key={idx}>
               <SyntaxHighlighter
-                language="tsx"
+                language={lang}
                 style={darcula}
                 wrapLongLines={true}
                 customStyle={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
@@ -56,7 +67,9 @@ const ChatBox = () => {
                 {code}
               </SyntaxHighlighter>
               <div className="code-actions">
-                <button onClick={() => navigator.clipboard.writeText(code)}><BsCopy size={15} /></button>
+                 <button onClick={() => handleCopy(code, idx)}>
+                  {copiedIndex === idx ? "Copied" : <BsCopy size={15} />}
+                </button>
                 <button
                   onClick={() => {
                     const vscode = (window as any).acquireVsCodeApi?.();
@@ -82,6 +95,12 @@ const ChatBox = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const handleCopy = (code: string, index: number) => {
+    navigator.clipboard.writeText(code);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 5000);
   };
 
   useEffect(() => {
@@ -135,7 +154,7 @@ const ChatBox = () => {
   
       setMessages((prev) => [
         ...prev,
-        { text: `📎 Attached: ${file.name}\n`, sender: "user" },
+        { text: `Attached Media: ${file.name}\n`, sender: "user" },
       ]);
   
       const prompt = `User uploaded file: ${file.name}\n\n${fileContent}`;
@@ -207,7 +226,7 @@ const ChatBox = () => {
           }}
         />
 
-        <button className="send-button" onClick={sendMessage}>
+        <button className="send-button" onClick={sendMessage}  disabled={isTyping}>
           <IoSendOutline size={20} />
         </button>
       </div>

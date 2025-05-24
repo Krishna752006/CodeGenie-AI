@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
@@ -20,6 +23,7 @@ const bs_2 = require("react-icons/bs");
 const lu_1 = require("react-icons/lu");
 const react_syntax_highlighter_1 = require("react-syntax-highlighter");
 const prism_1 = require("react-syntax-highlighter/dist/esm/styles/prism");
+const react_markdown_1 = __importDefault(require("react-markdown"));
 const ChatBox = () => {
     const [messages, setMessages] = (0, react_1.useState)([]);
     const [input, setInput] = (0, react_1.useState)("");
@@ -28,12 +32,16 @@ const ChatBox = () => {
     const chatRef = (0, react_1.useRef)(null);
     const textareaRef = (0, react_1.useRef)(null);
     const fileInputRef = (0, react_1.useRef)(null);
-    function extractCodeBlocks(text) {
-        const codeRegex = /```(?:[\w]*)?\n([\s\S]*?)```/g;
+    const [copiedIndex, setCopiedIndex] = (0, react_1.useState)(null);
+    function extractCodeBlocksWithLang(text) {
+        const codeRegex = /```(\w+)?\n([\s\S]*?)```/g;
         let match;
         const codeBlocks = [];
         while ((match = codeRegex.exec(text)) !== null) {
-            codeBlocks.push(match[1].trim());
+            codeBlocks.push({
+                lang: match[1] || "text",
+                code: match[2].trim()
+            });
         }
         return codeBlocks;
     }
@@ -42,9 +50,9 @@ const ChatBox = () => {
     }
     const renderMessage = (msg) => {
         if (msg.sender === "bot") {
-            const codeBlocks = extractCodeBlocks(msg.text);
+            const codeBlocks = extractCodeBlocksWithLang(msg.text);
             const displayText = removeCodeBlocks(msg.text);
-            return ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "bot-message" }, { children: [displayText && (0, jsx_runtime_1.jsx)("pre", { children: displayText }), codeBlocks.map((code, idx) => ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-block" }, { children: [(0, jsx_runtime_1.jsx)(react_syntax_highlighter_1.Prism, Object.assign({ language: "tsx", style: prism_1.darcula, wrapLongLines: true, customStyle: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: code })), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-actions" }, { children: [(0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => navigator.clipboard.writeText(code) }, { children: (0, jsx_runtime_1.jsx)(bs_2.BsCopy, { size: 15 }) })), (0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => {
+            return ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "bot-message" }, { children: [displayText && ((0, jsx_runtime_1.jsx)("div", Object.assign({ className: "markdown", style: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: (0, jsx_runtime_1.jsx)(react_markdown_1.default, { children: displayText }) }))), codeBlocks.map(({ lang, code }, idx) => ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-block" }, { children: [(0, jsx_runtime_1.jsx)(react_syntax_highlighter_1.Prism, Object.assign({ language: lang, style: prism_1.darcula, wrapLongLines: true, customStyle: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: code })), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-actions" }, { children: [(0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => handleCopy(code, idx) }, { children: copiedIndex === idx ? "Copied" : (0, jsx_runtime_1.jsx)(bs_2.BsCopy, { size: 15 }) })), (0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => {
                                             var _a, _b;
                                             const vscode = (_b = (_a = window).acquireVsCodeApi) === null || _b === void 0 ? void 0 : _b.call(_a);
                                             if (vscode) {
@@ -61,6 +69,11 @@ const ChatBox = () => {
                 behavior: "smooth",
             });
         }
+    };
+    const handleCopy = (code, index) => {
+        navigator.clipboard.writeText(code);
+        setCopiedIndex(index);
+        setTimeout(() => setCopiedIndex(null), 5000);
     };
     (0, react_1.useEffect)(() => {
         scrollToBottom();
@@ -110,7 +123,7 @@ const ChatBox = () => {
             const fileContent = reader.result;
             setMessages((prev) => [
                 ...prev,
-                { text: `📎 Attached: ${file.name}\n`, sender: "user" },
+                { text: `Attached Media: ${file.name}\n`, sender: "user" },
             ]);
             const prompt = `User uploaded file: ${file.name}\n\n${fileContent}`;
             setIsTyping(true);
@@ -137,6 +150,6 @@ const ChatBox = () => {
                                     target.scrollTop = 0;
                                 }, 0);
                             }
-                        } }), (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "send-button", onClick: sendMessage }, { children: (0, jsx_runtime_1.jsx)(io5_1.IoSendOutline, { size: 20 }) }))] }))] })));
+                        } }), (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "send-button", onClick: sendMessage, disabled: isTyping }, { children: (0, jsx_runtime_1.jsx)(io5_1.IoSendOutline, { size: 20 }) }))] }))] })));
 };
 exports.default = ChatBox;
