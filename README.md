@@ -57,7 +57,7 @@ Here’s how CodeGenie supports developers across domains:
 ## 🔄 Workflow Diagram
 
 <p align="center">
-  <img src="images/Workflow.png" width: 100%" />
+  <img src="images/Workflow.png" height: 60%" />
 </p>
 
 ---
