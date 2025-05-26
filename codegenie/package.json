@@ -101,8 +101,8 @@
         ]
     },
     "scripts": {
-        "watch:tsc": "tsc -w",
-        "watch:esbuild": "esbuild src/extension.ts --bundle --platform=node --outfile=dist/extension.js --watch",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
         "compile": "webpack --mode production",
         "watch": "webpack --watch",
         "build-ui": "cd ./src/codegenie-ui && npm run build"

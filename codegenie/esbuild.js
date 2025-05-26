@@ -1,6 +1,7 @@
 /* 
 * Takes the entry TypeScript file (src/extension.ts), transpiles it to JavaScript,
 * and bundles it with all dependencies into a single output file (dist/extension.js).
+* This Bundle is usefull as it reduces size and also fastens the startup speed.
 */
 
 const esbuild = require("esbuild"); //Imports the esbuild module, which is a fast JavaScript bundler and minifier

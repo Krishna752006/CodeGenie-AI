@@ -7,6 +7,7 @@ src/**
 .gitignore
 .yarnrc
 esbuild.js
+"package comments.txt"
 **/tsconfig.json
 **/eslint.config.mjs
 **/*.map
