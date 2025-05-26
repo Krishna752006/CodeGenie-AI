@@ -77,7 +77,23 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 🚀 Keyboard Shortcuts
+## 🚀 Launching the CodeGenie Extension in VS Code
+
+Press `F5` in VS Code to open a new **Extension Development Host** window. This is where the CodeGenie extension loads and becomes fully functional.
+
+You can interact with CodeGenie in these two ways:
+
+### 🎛 Command Palette
+
+Open the Command Palette with `Ctrl + Shift + P` (or `Cmd + Shift + P` on macOS) to access a range of CodeGenie commands, such as:
+
+- CodeGenie: Generate Code
+- CodeGenie: Enable Autocomplete
+- CodeGenie: Toggle Inline Suggestions
+
+This gives you quick keyboard-driven access to CodeGenie’s powerful features without leaving your workflow.
+
+### 🚀 Keyboard Shortcuts
 
 Boost your productivity with the following CodeGenie shortcuts:
 
