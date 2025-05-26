@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { fetchAICompletion } from "./codegenie-ui/src/api";
 import { CodeGenieViewProvider } from "./CodeGenieViewProvider";
 
-let isOnline = false;
+const API_URL = "http://127.0.0.1:8000/generate";
 let EXTENSION_STATUS = true;
 const debugOutputChannel = vscode.window.createOutputChannel("CodeGenie Debug");
 let inlineSuggestionRequested = false;
@@ -153,7 +153,7 @@ export function activate(context: vscode.ExtensionContext) { // This file export
                 statusBarItem.text = "$(sync~spin) CodeGenie: Generating...";
     
                 // Fetch the AI response based on the prompt text
-                let rawResponse = await fetchAICompletion(textBeforeCursor, isOnline);
+                let rawResponse = await fetchAICompletion(textBeforeCursor, API_URL, 1000);
                 let aiResponse = removeQueryFromResponse(rawResponse, textBeforeCursor); 
     
                 if (!aiResponse || aiResponse.trim() === "") {
@@ -188,7 +188,7 @@ async function generateCodeFromPrompt(editor: vscode.TextEditor, prompt: string)
     statusBarItem.text = "$(sync~spin) CodeGenie: Generating...";
 
     try {
-        const rawResponse = await fetchAICompletion(prompt, isOnline);
+        const rawResponse = await fetchAICompletion(prompt, API_URL, 1000);
         const cleanedResponse = removeQueryFromResponse(rawResponse, prompt);
         const aiResponse = extractOnlyCode(cleanedResponse);
 
