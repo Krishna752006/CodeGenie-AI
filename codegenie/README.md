@@ -1,8 +1,4 @@
-#  CodeGenie - Local AI Coding Assistant
-
-CodeGenie is a powerful, locally hosted AI coding assistant designed to enhance your development workflow with intelligent code generation, completions, and suggestions. This guide walks you through the full setup, from backend to UI, and launching the extension in VS Code.
-
----
+#  CodeGenie - Setting Up and Running
 
  **Backend Setup and Dependency Installation**
 
@@ -101,4 +97,3 @@ Access commands like:
 - CodeGenie: Toggle Inline Suggestions
 
  Your AI assistant is now fully armed and ready to boost your productivity like never before!
-
