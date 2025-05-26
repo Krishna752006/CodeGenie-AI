@@ -4,68 +4,45 @@
 
 ---
 
-## 🚀 Introduction
+# 🚀 Introduction
 
-CodeGenie is an **AI-powered coding assistant** built to transform how software is developed. It leverages **DeepSeek Coder** to provide context-aware code suggestions, detect and correct errors, and optimize code quality — all from within your editor.
+**CodeGenie** is an AI-powered coding assistant designed to **revolutionize the software development workflow**. Built on top of the powerful **DeepSeek-Coder** models, it brings intelligent, context-aware coding assistance directly into your editor — helping you write better code, faster.
 
-Designed to support a wide range of programming languages and frameworks, CodeGenie is a versatile companion for:
+With native **Visual Studio Code integration** and support for a wide range of programming languages and frameworks, CodeGenie enables developers to:
 
-- Web development
-- Machine learning and data science
-- Software engineering
-- Scripting and automation
+- ✅ **Generate accurate, context-sensitive code suggestions**  
+- 🛠️ **Detect and fix errors in real-time**  
+- ⚙️ **Refactor and optimize code for performance and clarity**  
+- 🌐 **Work seamlessly across technologies**, from web to machine learning
 
-Its interactive UI and seamless **VS Code integration** allow developers to work faster and smarter without leaving their environment.
-
----
-
-## 🎯 Purpose
-
-CodeGenie aims to streamline development workflows by offering:
-
-- ✅ Context-aware code suggestions  
-- 🛠️ Real-time error detection and fixes  
-- ⚙️ Code optimization and refactoring  
-- 🌐 Support for multiple programming languages and frameworks  
+Whether you're prototyping a web app, building data pipelines, or debugging legacy code, CodeGenie empowers you to stay in flow, reduce cognitive load, and focus on what matters most — building great software.
 
 ---
 
-## 💡 Use Cases
+# 💡 Use Cases
 
-- **Web Development**: Assist with frontend (HTML, CSS, JS) and backend (Node.js, Django, etc.) code  
-- **ML & Data Science**: Generate model scripts, data cleaning code, and pipelines  
-- **General Software Engineering**: Automate repetitive tasks, generate boilerplate, and follow best practices  
-- **Debugging**: Spot and fix errors more efficiently  
-- **Learning & Exploration**: Experiment with code through natural language queries  
+Here’s how CodeGenie supports developers across domains:
 
----
+### 🌐 Web Development
+- Generate and refine frontend code (HTML, CSS, JavaScript)  
+- Build backend services with Node.js, Django, Flask, and more
 
-## 🧠 Powered by DeepSeek Coder
+### 🤖 Machine Learning & Data Science
+- Generate model training scripts and evaluation code  
+- Create data cleaning, preprocessing, and visualization pipelines
 
-### 🔍 [DeepSeek Coder](https://arxiv.org/pdf/2401.14196)
+### 🛠️ General Software Engineering
+- Automate boilerplate code generation  
+- Implement design patterns and follow best practices  
+- Refactor and maintain large codebases
 
-DeepSeek Coder is a suite of open-source code LLMs (1.3B–33B parameters) trained on **2 trillion tokens** from 87+ programming languages. It introduces advanced techniques like **Fill-In-the-Middle (FIM)** for superior context modeling.
+### 🐞 Debugging
+- Detect bugs and suggest intelligent fixes in real-time  
+- Explain code behavior to assist in troubleshooting
 
-- Outperforms open-source baselines by **5x**  
-- Rivals **ChatGPT-3.5 Turbo** in coding tasks  
-- Includes **Instruct-tuned** and **v1.5** variants with enhanced capabilities  
-
-Its training corpus is rigorously curated — only **high-quality code** passes through compiler checks, syntax validation, and deduplication, resulting in a robust, real-world dataset.
-
----
-
-### 🔬 [DeepSeek Coder V2](https://arxiv.org/pdf/2406.11931)
-
-The next generation — **DeepSeek Coder V2** — takes things further:
-
-- Trained on **10.2 trillion tokens** (code + math + natural language)  
-- Supports **338+ programming languages**  
-- Uses a **Mixture-of-Experts (MoE)** architecture:  
-  - 16B model with 2.4B active params  
-  - 236B model with 21B active params  
-- Handles **128K token** context windows for large project understanding  
-
-It achieves **state-of-the-art performance** across coding benchmarks, nearly matching or exceeding **GPT-4o**. With improved reasoning and context awareness, it's a top-tier open-source coding model.
+### 📘 Learning & Exploration
+- Use natural language to explore code functionality  
+- Learn programming concepts with contextual examples  
 
 ---
 
@@ -85,14 +62,55 @@ It achieves **state-of-the-art performance** across coding benchmarks, nearly ma
 
 ---
 
-## 📝 License
+### 📜 License & Acknowledgments
 
-This project is licensed under the **MIT License** — free for personal and commercial use.
+CodeGenie is released under the **MIT License**, permitting free use, modification, and distribution for personal and commercial purposes.
+
+This project utilizes [DeepSeek-Coder](https://github.com/deepseek-ai/DeepSeek-Coder), which is governed by the **DeepSeek License Agreement Version 1.0 (October 2023)**. This license grants broad rights to use, reproduce, and distribute the model and its derivatives, but also includes important **use-based restrictions** to ensure responsible and lawful usage.
+
+#### Important Use Restrictions from DeepSeek License:
+
+- No use violating applicable laws or infringing third-party rights  
+- No military use  
+- No generating harmful, false, or inappropriate content  
+- No unauthorized dissemination of personal data  
+- No discriminatory or harmful uses against individuals or groups  
+
+By using CodeGenie, you agree to comply with all relevant terms of the DeepSeek License, including these use-based restrictions, and assume responsibility for your use of outputs generated via the model.
+
+For full details, please review the [DeepSeek License Agreement](https://github.com/deepseek-ai/DeepSeek-Coder/blob/main/LICENSE-MODEL) and associated documentation.
 
 ---
 
-## 🙌 Contributions
+#### 🔗 Repositories
 
-We welcome contributions and collaboration! Fork the repo, make your changes, and submit a pull request to help improve CodeGenie for everyone.
+| Project          | Link                                                                                      |
+|------------------|-------------------------------------------------------------------------------------------|
+| **CodeGenie**      | [github.com/kmitofficial/CodeGenie-G336-PS25](https://github.com/kmitofficial/CodeGenie-G336-PS25)   |
+| **DeepSeek-Coder** | [github.com/deepseek-ai/DeepSeek-Coder](https://github.com/deepseek-ai/DeepSeek-Coder)               |
 
-> Let the Genie code it for you ✨
+---
+
+## 🙌 Contributors
+
+- [Mahesh Kiran](https://github.com/Mahesh-Kiran)
+- [Krishna Chaitanya](https://github.com/Krishna752006)
+- [Sneha](https://github.com/sneha123-reddy)
+- [AASRITH CODER](https://github.com/AASRITHCODER)
+- [Triveni](https://github.com/AdepuTriveni)
+- [Lokesh Vasireddy](https://github.com/LokeshVasireddy)
+
+---
+
+## Reference Videos
+
+- **Mahesh Kiran** : https://www.youtube.com/
+- **Krishna Chaitanya** : https://youtu.be/
+- **Sneha** : https://youtu.be/
+- **AASRITH** : https://www.youtube.com/
+- **Triveni** : https://youtu.be/
+- **Lokesh Vasireddy** : https://youtu.be/
+
+---
+
+🔥 Get ready to build the future of **AI-powered development** with **CodeGenie**! 🚀
