@@ -1,6 +1,6 @@
-#  CodeGenie - Setting Up and Running
+# 🚀 CodeGenie - Setup & Running Guide
 
- **Backend Setup and Dependency Installation**
+## 🧩 Backend Setup
 
 Navigate to the `codegenie` directory and install the required backend dependencies using `pip`. This includes FastAPI, Uvicorn, Transformers, Torch, and other essential libraries for the AI model and API service.
 
@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ---
 
- **Frontend Dependency Installation**
+## 🌐 Frontend Dependency Installation
 
 Navigate back to the `codegenie` directory and install all necessary frontend dependencies using `npm`. First, use `npm install` to fetch and set up the packages listed in `package.json`, then use `npm ci` to ensure a clean and consistent install based on the lock file.
 
@@ -23,7 +23,7 @@ npm ci
 
 ---
 
- **Model Initialization**
+## 🧠 Model Initialization
 
 Navigate to the backend folder and run `main.py` to download and initialize the AI model. This script sets up the backend server using FastAPI and ensures the required model files are loaded and ready for inference.
 
@@ -36,20 +36,19 @@ python main.py
 
 ---
 
-🖥 **CodeGenie UI Setup**
+## 🖥 CodeGenie UI Setup
 
 Navigate to the `src` directory, then into the `codegenie-ui` directory and install the frontend dependencies. This UI is built with React and TypeScript, and you’ll need to run the following commands to ensure everything is properly installed and locked:
 
 ```bash
-cd src
-cd codegenie-ui
+cd src/codegenie-ui
 npm install
 npm ci
 ```
 
 ---
 
- **Launching the CodeGenie UI**
+## 🔥 Launch the CodeGenie UI
 
 To verify that the CodeGenie UI is working correctly, run the development server using:
 
@@ -64,7 +63,7 @@ This will start the React app and open it in your default browser (usually at `h
 
 ---
 
- **Connecting the Backend**
+## 🔗 Connect the Backend
 
 After setting up the frontend, fire up the FastAPI backend to handle prompt-to-code requests from CodeGenie:
 
@@ -78,22 +77,17 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
- **Launching CodeGenie Extension in VS Code**
+## 🚀 Keyboard Shortcuts
 
-Press `F5` in VS Code, which opens a new Extension Development Host window. This is where the CodeGenie extension boots up and becomes fully functional. From here, you can interact with it in three powerful ways:
+Boost your productivity with the following CodeGenie shortcuts:
 
-🗨️ **Chat Panel**: Ask any code-related question directly in the CodeGenie chat interface.
+| Command                             | Windows/Linux Shortcut | macOS Shortcut        | Description                                      |
+|-------------------------------------|-------------------------|------------------------|--------------------------------------------------|
+| **Generate Code**                   | `Ctrl+G Ctrl+C`         | `Cmd+G Cmd+C`          | Generate code using the provided prompt.         |
+| **Generate from Last Comment**      | `Ctrl+Alt+,`            | `Cmd+Alt+,`            | Generate code based on the last code comment.    |
+| **Trigger Inline Completion**       | `Ctrl+T Ctrl+I`         | `Cmd+T Cmd+I`          | Show inline code suggestions.                    |
+| **Debug Selected Code**             | `Alt+S`                 | `Alt+S`                | Get AI-assisted debugging on selected code.      |
+| **Enable CodeGenie**                | `Ctrl+Alt+E`            | `Cmd+Alt+E`            | Enable the CodeGenie extension.                  |
+| **Disable CodeGenie**               | `Ctrl+Alt+D`            | `Cmd+Alt+D`            | Disable the CodeGenie extension.                 |
 
-💬 **Commented Prompt**: Write a comment in code like:
-```js
-// generate a login form in React
-```
-and let CodeGenie generate it right inside the file.
-
-🎛 **Command Palette (Ctrl + Shift + P)**:
-Access commands like:
-- CodeGenie: Generate Code
-- CodeGenie: Enable Autocomplete
-- CodeGenie: Toggle Inline Suggestions
-
- Your AI assistant is now fully armed and ready to boost your productivity like never before!
+> 📝 **Note:** All shortcuts work when the editor is focused.
