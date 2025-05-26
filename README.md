@@ -49,7 +49,7 @@ Here’s how CodeGenie supports developers across domains:
 ## 📐 Architecture Diagram (DeepSeek Coder V2)
 
 <p align="center">
-  <img src="images/Architecture.jpg" width="400"/>
+  <img src="images/Architecture.png" style="width: 100%; max-height: 400px; object-fit: contain;" />
 </p>
 
 ---
@@ -57,7 +57,7 @@ Here’s how CodeGenie supports developers across domains:
 ## 🔄 Workflow Diagram
 
 <p align="center">
-  <img src="images/Workflow.jpg" width="500"/>
+  <img src="images/Workflow.png" style="width: 100%; max-height: 400px; object-fit: contain;" />
 </p>
 
 ---
