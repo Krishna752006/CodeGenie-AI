@@ -88,4 +88,12 @@ export class CodeGenieViewProvider implements vscode.WebviewViewProvider {
       webviewView.webview.html = `<h1>Error loading UI</h1><p>${error.message}</p>`;
     }
   }
+
+  public postMessage(message: any) {
+    if (this._view) {
+      this._view.webview.postMessage(message);
+    } else {
+      vscode.window.showErrorMessage("CodeGenie panel is not visible.");
+    }
+  }
 }

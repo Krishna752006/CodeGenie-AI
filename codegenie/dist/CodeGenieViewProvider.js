@@ -102,6 +102,14 @@ class CodeGenieViewProvider {
             webviewView.webview.html = `<h1>Error loading UI</h1><p>${error.message}</p>`;
         }
     }
+    postMessage(message) {
+        if (this._view) {
+            this._view.webview.postMessage(message);
+        }
+        else {
+            vscode.window.showErrorMessage("CodeGenie panel is not visible.");
+        }
+    }
 }
 exports.CodeGenieViewProvider = CodeGenieViewProvider;
 CodeGenieViewProvider.viewType = "codegenieView"; //This line is just the id of the webview and just used by package.json to identify the file
