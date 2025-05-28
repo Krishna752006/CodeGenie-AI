@@ -22,15 +22,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CodeGenieViewProvider = void 0;
 const vscode = __importStar(require("vscode"));
@@ -68,34 +59,6 @@ class CodeGenieViewProvider {
                 return `${attr}="${resourceUri}"`; // returns like src="vscode-resource://extension-folder/main.js"
             });
             webviewView.webview.html = html;
-            webviewView.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
-                if (message.type === "insertCode") {
-                    try {
-                        let editor = vscode.window.activeTextEditor; // Try to get the last active text editor
-                        if (!editor) {
-                            vscode.window.showErrorMessage("No active editor. Please open a file to insert code.");
-                            return;
-                        }
-                        yield vscode.window.showTextDocument(editor.document, editor.viewColumn, false); // Always focus the editor before inserting
-                        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                            editor = vscode.window.activeTextEditor; // Get the (now) active editor again
-                            if (!editor) {
-                                vscode.window.showErrorMessage("No active editor after focusing.");
-                                return;
-                            }
-                            const success = yield editor.edit(editBuilder => {
-                                editBuilder.insert(editor.selection.active, message.code);
-                            });
-                            if (!success) {
-                                vscode.window.showErrorMessage("Failed to insert code. Please try again.");
-                            }
-                        }), 10); // 10ms delay to ensure focus
-                    }
-                    catch (err) {
-                        vscode.window.showErrorMessage("Error inserting code: " + err.message);
-                    }
-                }
-            }));
         }
         catch (error) {
             console.error("❌ Failed to load Webview:", error);

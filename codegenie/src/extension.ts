@@ -8,7 +8,6 @@ const debugOutputChannel = vscode.window.createOutputChannel("CodeGenie Debug");
 let inlineSuggestionRequested = false;
 let statusBarItem: vscode.StatusBarItem;
 let provider: CodeGenieViewProvider;
-let inlineImprovementCode: { code: string, selection: vscode.Selection } | null = null;
 
 export function activate(context: vscode.ExtensionContext) { // This file exports one function, activate, which is called the very first time the extension is activated.
     console.log("✅ CodeGenie Extension Activated!");
@@ -82,6 +81,12 @@ export function activate(context: vscode.ExtensionContext) { // This file export
     let debugSelectedCode = vscode.commands.registerCommand('codegenie.debugSelectedCode', async () => {
         
         const editor = vscode.window.activeTextEditor;
+
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
+
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
@@ -123,10 +128,17 @@ export function activate(context: vscode.ExtensionContext) { // This file export
 
     let explainSelectedCode = vscode.commands.registerCommand('codegenie.explainCode', async () => {
         const editor = vscode.window.activeTextEditor;
+
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
+
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
         }
+
         const selection = editor.selection;
         const code = editor.document.getText(selection);
         if (!code.trim()) {
@@ -146,6 +158,12 @@ export function activate(context: vscode.ExtensionContext) { // This file export
 
     let improveSelectedCode = vscode.commands.registerCommand('codegenie.improveCode', async () => {
         const editor = vscode.window.activeTextEditor;
+
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
+
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
@@ -175,39 +193,10 @@ export function activate(context: vscode.ExtensionContext) { // This file export
                 return;
             }
 
-            // Save context for inline provider
-            inlineImprovementCode = { code: improved, selection };
-            inlineSuggestionRequested = true;
-
-            // Trigger inline suggestion manually
-            await vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
-
-            // --- Show Accept/Reject/Show Diff options ---
-            const accept = 'Accept';
-            const reject = 'Reject';
-            const showDiff = 'Show Diff';
-            const choice = await vscode.window.showInformationMessage(
-                'Improved code ready. What would you like to do?',
-                accept, showDiff, reject
-            );
-
-            if (choice === accept) {
-                editor.edit(editBuilder => {
-                    editBuilder.replace(selection, improved);
-                });
-                vscode.window.showInformationMessage('Code replaced with improved version.');
-            } else if (choice === showDiff) {
-                // Show a diff between original and improved code
-                const originalDoc = await vscode.workspace.openTextDocument({ content: code, language: editor.document.languageId });
-                const improvedDoc = await vscode.workspace.openTextDocument({ content: improved, language: editor.document.languageId });
-                vscode.commands.executeCommand(
-                    'vscode.diff',
-                    originalDoc.uri,
-                    improvedDoc.uri,
-                    'Original ↔ Improved'
-                );
-            }
-            // If rejected, do nothing
+            debugOutputChannel.clear();
+            debugOutputChannel.appendLine("---- Improved Code ----\n" + improved);
+            debugOutputChannel.show(true);
+            vscode.window.showInformationMessage('Improved code displayed in Output Console.');
 
             statusBarItem.text = "$(check) CodeGenie: Ready";
         } catch (error) {
@@ -229,20 +218,6 @@ export function activate(context: vscode.ExtensionContext) { // This file export
             if (!EXTENSION_STATUS) return [];
             
             if (!inlineSuggestionRequested) return [];
-            inlineSuggestionRequested = false;
-
-            if (inlineImprovementCode) {
-                const { code, selection } = inlineImprovementCode;
-                inlineImprovementCode = null;
-
-                return [
-                    new vscode.InlineCompletionItem(
-                        new vscode.SnippetString(code),
-                        new vscode.Range(selection.start, selection.end)
-                    )
-                ];
-            }
-            
             inlineSuggestionRequested = false;
 
             let textBeforeCursor = document.getText(new vscode.Range(position.with(undefined, 0), position)).trim();

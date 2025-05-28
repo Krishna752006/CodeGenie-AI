@@ -19,10 +19,8 @@ const prism_1 = require("react-syntax-highlighter/dist/esm/styles/prism");
 const react_syntax_highlighter_1 = require("react-syntax-highlighter");
 const io5_1 = require("react-icons/io5");
 const io_1 = require("react-icons/io");
-const hi_1 = require("react-icons/hi");
 const bs_1 = require("react-icons/bs");
-const bs_2 = require("react-icons/bs");
-const lu_1 = require("react-icons/lu");
+const md_1 = require("react-icons/md");
 const react_markdown_1 = __importDefault(require("react-markdown"));
 const ThemeSwitcher_1 = __importDefault(require("./ThemeSwitcher"));
 require("./styles.css");
@@ -30,7 +28,6 @@ const ChatBox = () => {
     const [messages, setMessages] = (0, react_1.useState)([]);
     const [input, setInput] = (0, react_1.useState)("");
     const [isTyping, setIsTyping] = (0, react_1.useState)(false);
-    const [isOnline, setIsOnline] = (0, react_1.useState)(false);
     const chatRef = (0, react_1.useRef)(null);
     const bottomRef = (0, react_1.useRef)(null);
     const textareaRef = (0, react_1.useRef)(null);
@@ -59,13 +56,7 @@ const ChatBox = () => {
         if (msg.sender === "bot") {
             const codeBlocks = extractCodeBlocksWithLang(msg.text);
             const displayText = removeCodeBlocks(msg.text);
-            return ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "bot-message" }, { children: [displayText && ((0, jsx_runtime_1.jsx)("div", Object.assign({ className: "markdown", style: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: (0, jsx_runtime_1.jsx)(react_markdown_1.default, { children: displayText }) }))), codeBlocks.map(({ lang, code }, idx) => ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-block" }, { children: [(0, jsx_runtime_1.jsx)(react_syntax_highlighter_1.Prism, Object.assign({ language: lang, style: prism_1.darcula, wrapLongLines: true, customStyle: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: code })), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-actions" }, { children: [(0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => handleCopy(code, idx) }, { children: copiedIndex === idx ? "Copied" : (0, jsx_runtime_1.jsx)(bs_2.BsCopy, { size: 15 }) })), (0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => {
-                                            var _a, _b;
-                                            const vscode = (_b = (_a = window).acquireVsCodeApi) === null || _b === void 0 ? void 0 : _b.call(_a);
-                                            if (vscode) {
-                                                vscode.postMessage({ type: "insertCode", code });
-                                            }
-                                        } }, { children: (0, jsx_runtime_1.jsx)(lu_1.LuFileCode2, { size: 15 }) }))] }))] }), idx)))] })));
+            return ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "bot-message" }, { children: [displayText && ((0, jsx_runtime_1.jsx)("div", Object.assign({ className: "markdown", style: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: (0, jsx_runtime_1.jsx)(react_markdown_1.default, { children: displayText }) }))), codeBlocks.map(({ lang, code }, idx) => ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "code-block" }, { children: [(0, jsx_runtime_1.jsx)(react_syntax_highlighter_1.Prism, Object.assign({ language: lang, style: prism_1.darcula, wrapLongLines: true, customStyle: { whiteSpace: "pre-wrap", wordBreak: "break-word" } }, { children: code })), (0, jsx_runtime_1.jsx)("div", Object.assign({ className: "code-actions" }, { children: (0, jsx_runtime_1.jsx)("button", Object.assign({ onClick: () => handleCopy(code, idx) }, { children: copiedIndex === idx ? "Copied" : (0, jsx_runtime_1.jsx)(bs_1.BsCopy, { size: 15 }) })) }))] }), idx)))] })));
         }
         return (0, jsx_runtime_1.jsx)("pre", Object.assign({ className: "user-message" }, { children: msg.text }));
     };
@@ -91,6 +82,32 @@ const ChatBox = () => {
             }
         }
     }, [input]);
+    (0, react_1.useEffect)(() => {
+        const savedMessages = localStorage.getItem('chat_messages');
+        const savedInput = localStorage.getItem('chat_input');
+        const savedFiles = localStorage.getItem('chat_files');
+        const savedFileContents = localStorage.getItem('chat_file_contents');
+        if (savedMessages)
+            setMessages(JSON.parse(savedMessages));
+        if (savedInput)
+            setInput(savedInput);
+        if (savedFiles)
+            setPendingFiles(JSON.parse(savedFiles));
+        if (savedFileContents)
+            setPendingFileContents(JSON.parse(savedFileContents));
+    }, []);
+    (0, react_1.useEffect)(() => {
+        localStorage.setItem('chat_messages', JSON.stringify(messages));
+    }, [messages]);
+    (0, react_1.useEffect)(() => {
+        localStorage.setItem('chat_input', input);
+    }, [input]);
+    (0, react_1.useEffect)(() => {
+        localStorage.setItem('chat_files', JSON.stringify(pendingFiles));
+    }, [pendingFiles]);
+    (0, react_1.useEffect)(() => {
+        localStorage.setItem('chat_file_contents', JSON.stringify(pendingFileContents));
+    }, [pendingFileContents]);
     (0, react_1.useEffect)(() => {
         const timeout = setTimeout(() => {
             var _a;
@@ -160,10 +177,13 @@ const ChatBox = () => {
         setPendingFileContents([]);
         setIsTyping(true);
         try {
-            const API_URL = pendingFiles.length > 0
+            const totalText = input + pendingFileContents.join('');
+            const estimatedTokens = Math.ceil(totalText.length / 4);
+            const useLargeModel = estimatedTokens > 1000;
+            const API_URL = useLargeModel
                 ? "http://127.0.0.1:8000/generate-large"
                 : "http://127.0.0.1:8000/generate";
-            const maxTokens = pendingFiles.length > 0 ? 4096 : 1000;
+            const maxTokens = useLargeModel ? 4096 : 1000;
             const aiResponse = yield (0, api_1.fetchAICompletion)(promptToSend, API_URL, maxTokens);
             setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
         }
@@ -187,11 +207,17 @@ const ChatBox = () => {
             };
             reader.readAsText(file);
         });
+        e.target.value = "";
     };
     return ((0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("div", Object.assign({ className: "theme-switcher-fixed" }, { children: (0, jsx_runtime_1.jsx)(ThemeSwitcher_1.default, {}) })), (0, jsx_runtime_1.jsx)("div", Object.assign({ className: "help-button-fixed" }, { children: (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "help-button", onClick: () => setShowHelpPopup(true), "aria-label": "Show help", title: "Show CodeGenie Help" }, { children: (0, jsx_runtime_1.jsx)(io_1.IoMdHelp, { size: 14 }) })) })), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "chatbox-container" }, { children: [(0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "chatbox-history", ref: chatRef }, { children: [messages.map((msg, index) => ((0, jsx_runtime_1.jsx)("div", Object.assign({ className: `message-bubble ${msg.sender === "user" ? "user-bubble" : "bot-bubble"}` }, { children: renderMessage(msg) }), index))), isTyping && (0, jsx_runtime_1.jsx)("div", Object.assign({ className: "typing-indicator" }, { children: "CodeGenie is thinking..." })), (0, jsx_runtime_1.jsx)("div", { ref: bottomRef })] })), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "chatbox-input-area", style: { flexDirection: "column", alignItems: "stretch" } }, { children: [pendingFiles.length > 0 && ((0, jsx_runtime_1.jsx)("div", Object.assign({ style: { display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "8px" } }, { children: pendingFiles.map((file, idx) => ((0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "attached-file-chip show" }, { children: [(0, jsx_runtime_1.jsx)("span", Object.assign({ className: "file-name" }, { children: file.name })), (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "remove-file-btn", "aria-label": `Remove ${file.name}`, onClick: () => {
                                                 setPendingFiles(pendingFiles.filter((_, i) => i !== idx));
                                                 setPendingFileContents(pendingFileContents.filter((_, i) => i !== idx));
-                                            } }, { children: "\u2716" }))] }), file.name + idx))) }))), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "input-row", style: { display: "flex", alignItems: "center", gap: "10px" } }, { children: [(0, jsx_runtime_1.jsx)("button", Object.assign({ className: "action-button", onClick: () => { var _a; return (_a = fileInputRef.current) === null || _a === void 0 ? void 0 : _a.click(); }, title: "Attachments" }, { children: (0, jsx_runtime_1.jsx)(io5_1.IoAddCircleOutline, { size: 20 }) })), (0, jsx_runtime_1.jsx)("input", { type: "file", ref: fileInputRef, style: { display: "none" }, multiple: true, onChange: handleFileUpload }), (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "action-button", onClick: () => setIsOnline(prev => !prev), title: isOnline ? "RTX Mode (Remote)" : "Local Mode (on device)" }, { children: isOnline ? (0, jsx_runtime_1.jsx)(bs_1.BsPciCard, { size: 20 }) : (0, jsx_runtime_1.jsx)(hi_1.HiDesktopComputer, { size: 20 }) })), (0, jsx_runtime_1.jsx)("textarea", { ref: textareaRef, className: "chatbox-input", placeholder: "Type your task here", value: input, onChange: (e) => setInput(e.target.value), onKeyDown: (e) => {
+                                            } }, { children: "\u2716" }))] }), file.name + idx))) }))), (0, jsx_runtime_1.jsxs)("div", Object.assign({ className: "input-row", style: { display: "flex", alignItems: "center", gap: "10px" } }, { children: [(0, jsx_runtime_1.jsx)("button", Object.assign({ className: "action-button", onClick: () => { var _a; return (_a = fileInputRef.current) === null || _a === void 0 ? void 0 : _a.click(); }, title: "Attachments" }, { children: (0, jsx_runtime_1.jsx)(io5_1.IoAddCircleOutline, { size: 20 }) })), (0, jsx_runtime_1.jsx)("input", { type: "file", ref: fileInputRef, style: { display: "none" }, multiple: true, onChange: handleFileUpload }), (0, jsx_runtime_1.jsx)("button", Object.assign({ className: "action-button", onClick: () => {
+                                            setMessages([]);
+                                            setInput("");
+                                            setPendingFiles([]);
+                                            setPendingFileContents([]);
+                                        }, title: "Clear All Chat", disabled: isTyping }, { children: (0, jsx_runtime_1.jsx)(md_1.MdClearAll, { size: 20 }) })), (0, jsx_runtime_1.jsx)("textarea", { ref: textareaRef, className: "chatbox-input", placeholder: "Type your task here", value: input, onChange: (e) => setInput(e.target.value), onKeyDown: (e) => {
                                             if (e.key === "Enter" && !e.shiftKey) {
                                                 e.preventDefault();
                                                 sendMessage();

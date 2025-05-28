@@ -42,7 +42,6 @@ const debugOutputChannel = vscode.window.createOutputChannel("CodeGenie Debug");
 let inlineSuggestionRequested = false;
 let statusBarItem;
 let provider;
-let inlineImprovementCode = null;
 function activate(context) {
     console.log("✅ CodeGenie Extension Activated!");
     provider = new CodeGenieViewProvider_1.CodeGenieViewProvider(context);
@@ -101,6 +100,10 @@ function activate(context) {
     }));
     let debugSelectedCode = vscode.commands.registerCommand('codegenie.debugSelectedCode', () => __awaiter(this, void 0, void 0, function* () {
         const editor = vscode.window.activeTextEditor;
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
@@ -140,6 +143,10 @@ function activate(context) {
     }));
     let explainSelectedCode = vscode.commands.registerCommand('codegenie.explainCode', () => __awaiter(this, void 0, void 0, function* () {
         const editor = vscode.window.activeTextEditor;
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
@@ -161,6 +168,10 @@ function activate(context) {
     let improveSelectedCode = vscode.commands.registerCommand('codegenie.improveCode', () => __awaiter(this, void 0, void 0, function* () {
         var _a;
         const editor = vscode.window.activeTextEditor;
+        if (!EXTENSION_STATUS) {
+            vscode.window.showErrorMessage("CodeGenie is disabled.");
+            return;
+        }
         if (!editor) {
             vscode.window.showErrorMessage('Open a file to use CodeGenie.');
             return;
@@ -185,29 +196,10 @@ function activate(context) {
                 statusBarItem.text = "$(check) CodeGenie: Ready";
                 return;
             }
-            // Save context for inline provider
-            inlineImprovementCode = { code: improved, selection };
-            inlineSuggestionRequested = true;
-            // Trigger inline suggestion manually
-            yield vscode.commands.executeCommand('editor.action.inlineSuggest.trigger');
-            // --- Show Accept/Reject/Show Diff options ---
-            const accept = 'Accept';
-            const reject = 'Reject';
-            const showDiff = 'Show Diff';
-            const choice = yield vscode.window.showInformationMessage('Improved code ready. What would you like to do?', accept, showDiff, reject);
-            if (choice === accept) {
-                editor.edit(editBuilder => {
-                    editBuilder.replace(selection, improved);
-                });
-                vscode.window.showInformationMessage('Code replaced with improved version.');
-            }
-            else if (choice === showDiff) {
-                // Show a diff between original and improved code
-                const originalDoc = yield vscode.workspace.openTextDocument({ content: code, language: editor.document.languageId });
-                const improvedDoc = yield vscode.workspace.openTextDocument({ content: improved, language: editor.document.languageId });
-                vscode.commands.executeCommand('vscode.diff', originalDoc.uri, improvedDoc.uri, 'Original ↔ Improved');
-            }
-            // If rejected, do nothing
+            debugOutputChannel.clear();
+            debugOutputChannel.appendLine("---- Improved Code ----\n" + improved);
+            debugOutputChannel.show(true);
+            vscode.window.showInformationMessage('Improved code displayed in Output Console.');
             statusBarItem.text = "$(check) CodeGenie: Ready";
         }
         catch (error) {
@@ -223,14 +215,6 @@ function activate(context) {
                 return [];
             if (!inlineSuggestionRequested)
                 return [];
-            inlineSuggestionRequested = false;
-            if (inlineImprovementCode) {
-                const { code, selection } = inlineImprovementCode;
-                inlineImprovementCode = null;
-                return [
-                    new vscode.InlineCompletionItem(new vscode.SnippetString(code), new vscode.Range(selection.start, selection.end))
-                ];
-            }
             inlineSuggestionRequested = false;
             let textBeforeCursor = document.getText(new vscode.Range(position.with(undefined, 0), position)).trim();
             if (!textBeforeCursor) {
