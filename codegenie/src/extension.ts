@@ -101,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) { // This file export
         statusBarItem.text = "$(sync~spin) CodeGenie: Debugging...";
     
         try {
-            const response = await fetch('http://127.0.0.1:8000/debug', {
+            const response = await fetch("http://127.0.0.1:8000/debug", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt: code, max_tokens: 1000 })
@@ -178,7 +178,7 @@ export function activate(context: vscode.ExtensionContext) { // This file export
 
         statusBarItem.text = "$(sync~spin) CodeGenie: Improving...";
         try {
-            const response = await fetch('http://127.0.0.1:8000/improve', {
+            const response = await fetch("http://127.0.0.1:8000/improve", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt: code, max_tokens: 1000 })

@@ -47,7 +47,7 @@ class CodeGenieViewProvider {
                 html = html.replace(/<head>/i, `<head>
             <meta http-equiv="Content-Security-Policy" 
                   content="default-src 'none'; 
-                          connect-src http://127.0.0.1:8000 http://<rtx-4050-server-ip>:8000 vscode-resource:; 
+                          connect-src http://127.0.0.1:8000 https://ecee-183-82-97-138.ngrok-free.app vscode-resource:; 
                           img-src vscode-resource: https:; 
                           script-src vscode-resource: 'unsafe-inline'; 
                           style-src vscode-resource: 'unsafe-inline'; 

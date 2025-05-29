@@ -126,7 +126,7 @@ const ChatBox = () => {
                 ]);
                 setIsTyping(true);
                 // Call your backend /explain endpoint
-                fetch("http://127.0.0.1:8000/explain", {
+                fetch("https://1b20-183-82-97-138.ngrok-free.app/explain", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -181,8 +181,8 @@ const ChatBox = () => {
             const estimatedTokens = Math.ceil(totalText.length / 4);
             const useLargeModel = estimatedTokens > 1000;
             const API_URL = useLargeModel
-                ? "http://127.0.0.1:8000/generate-large"
-                : "http://127.0.0.1:8000/generate";
+                ? "https://ecee-183-82-97-138.ngrok-free.app/generate-large"
+                : "https://ecee-183-82-97-138.ngrok-free.app/generate";
             const maxTokens = useLargeModel ? 4096 : 1000;
             const aiResponse = yield (0, api_1.fetchAICompletion)(promptToSend, API_URL, maxTokens);
             setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
