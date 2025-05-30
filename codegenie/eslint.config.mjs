@@ -1,32 +1,32 @@
-// This file helps check your TypeScript code for mistakes and keeps the style consistent.
+// ESLint configuration to catch TypeScript issues and enforce consistent coding style
 
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 
 export default [
     {
-        files: ["**/*.ts"], // Apply these settings to all .ts files
+        files: ["**/*.ts"], // Target all TypeScript files
     },
     {
         plugins: {
-            "@typescript-eslint": typescriptEslint, // Add extra TypeScript-specific rules
+            "@typescript-eslint": typescriptEslint, // Enable TypeScript-specific linting rules
         },
 
         languageOptions: {
-            parser: tsParser,         // Use this parser so ESLint can understand TypeScript
-            ecmaVersion: 2022,        // Let ESLint understand modern JavaScript (2022 features)
-            sourceType: "module",     // Tell ESLint we are using import/export
+            parser: tsParser,         // Use the TypeScript parser to analyze code
+            ecmaVersion: 2022,        // Support modern ECMAScript features (up to 2022)
+            sourceType: "module",     // Treat files as ES modules (enables import/export)
         },
 
         rules: {
             "@typescript-eslint/naming-convention": ["warn", {
                 selector: "import",
-                format: ["camelCase", "PascalCase"],
+                format: ["camelCase", "PascalCase"], // Enforce consistent import naming
             }],
-            curly: "warn",                // Always use curly braces {} with if/else and loops
-            eqeqeq: "warn",              // Use === and !== instead of == and !=
-            "no-throw-literal": "warn",  // Don’t throw strings or numbers — always use Error objects
-            semi: "warn",                // Make sure to end lines with a semicolon ;
+            curly: "warn",                // Require braces around blocks in control statements
+            eqeqeq: "warn",              // Enforce strict equality (=== and !==)
+            "no-throw-literal": "warn",  // Disallow throwing literals (like strings or numbers)
+            semi: "warn",                // Require semicolons at the end of statements
         },
     },
 ];
