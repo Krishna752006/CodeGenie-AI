@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.codegenieAPI = void 0;
 const axios_1 = __importDefault(require("axios"));
-const API_BASE = "https://6a7a-183-82-97-138.ngrok-free.app"; // Single configuration point
+const API_BASE = "http://127.0.0.1:8000"; // Single configuration point
 const MAX_TOKENS = {
     REGULAR: 1000,
     LARGE: 4096,

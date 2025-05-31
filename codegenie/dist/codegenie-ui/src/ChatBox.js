@@ -177,11 +177,18 @@ const ChatBox = () => {
             setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
         }
         catch (error) {
-            setMessages((prev) => [...prev, { text: error.message, sender: "bot" }]);
+            console.error("API Error:", error);
+            setMessages(prev => [
+                ...prev,
+                {
+                    text: `❌ Error: ${error instanceof Error
+                        ? error.message
+                        : "Failed to get response from AI backend. Please check your connection."}`,
+                    sender: "bot"
+                }
+            ]);
         }
-        finally {
-            setIsTyping(false);
-        }
+        setIsTyping(false);
     });
     const handleFileUpload = (e) => {
         const files = e.target.files;

@@ -208,11 +208,20 @@ const ChatBox = () => {
       const aiResponse = await codegenieAPI.generate(promptToSend);
 
       setMessages((prev) => [...prev, { text: aiResponse, sender: "bot" }]);
-    } catch (error: any) {
-      setMessages((prev) => [...prev, { text: error.message, sender: "bot" }]);
-    } finally {
-      setIsTyping(false);
+    } catch (error) {
+      console.error("API Error:", error);
+      setMessages(prev => [
+        ...prev,
+        {
+          text: `❌ Error: ${error instanceof Error
+              ? error.message
+              : "Failed to get response from AI backend. Please check your connection."
+            }`,
+          sender: "bot"
+        }
+      ]);
     }
+    setIsTyping(false);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

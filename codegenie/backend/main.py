@@ -34,9 +34,18 @@ class CodeRequest(BaseModel):
     prompt: str
     max_tokens: int
 
+def format_prompt_with_backticks(user_prompt: str) -> str:
+    return (
+        f"{user_prompt}\n\n"
+        "When providing code, always format it inside a markdown code block "
+        "using triple backticks and specify the correct language. "
+    )
+
 @app.post("/generate")
 async def generate_code(request: CodeRequest): # To Make the Network Communications b/w servers smoother using async 
-    inputs = tokenizer(request.prompt, return_tensors = "pt").to(DEVICE) # Returns in the form of Dictionary like {"id": ...}
+    # Always add the formatting instruction
+    model_prompt = format_prompt_with_backticks(request.prompt)
+    inputs = tokenizer(model_prompt, return_tensors="pt").to(DEVICE) # Returns in the form of Dictionary like {"id": ...}
     
     outputs = model.generate(
         **inputs, # Gives the unpacked dictionary like id = [..], ..., etc.
@@ -45,13 +54,15 @@ async def generate_code(request: CodeRequest): # To Make the Network Communicati
     )
 
     response = tokenizer.decode(outputs[0], skip_special_tokens = True) # Special Tokens like <EOS> are removed
+    response = response[len(model_prompt):].strip()
     return {"response": response}
 
 @app.post("/generate-large")
 async def generate_large_code(request: CodeRequest):
 
     max_tokens = min(request.max_tokens, 4096)
-    inputs = tokenizer(request.prompt, return_tensors="pt").to(DEVICE)
+    model_prompt = format_prompt_with_backticks(request.prompt)
+    inputs = tokenizer(model_prompt, return_tensors="pt").to(DEVICE)
 
     outputs = model.generate(
         **inputs,
@@ -59,7 +70,7 @@ async def generate_large_code(request: CodeRequest):
         pad_token_id=model.config.eos_token_id
     )
     full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    response = full_output[len(request.prompt):].strip()
+    response = full_output[len(model_prompt):].strip()
     
     return {"response": response}
 

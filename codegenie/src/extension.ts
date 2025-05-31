@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { codegenieAPI } from './codegenie-ui/src/api';
 import { CodeGenieViewProvider } from "./CodeGenieViewProvider";
+import languageMap from './languageMap';
 
 let EXTENSION_STATUS = true;
 const debugOutputChannel = vscode.window.createOutputChannel("CodeGenie Debug");
@@ -32,10 +33,16 @@ export function activate(context: vscode.ExtensionContext) { // This file export
             return;
         }
 
+        // Language detectionAdd commentMore actions
+        const document = editor.document;
+        const languageId = document.languageId;
+        const languageName = languageMap[languageId] || languageId;
+
         const prompt = await vscode.window.showInputBox({ prompt: 'Enter your AI prompt' });
         if (!prompt) return;
 
-        await generateCodeFromPrompt(editor, prompt);
+        const promptWithLanguage = `In ${languageName}, ${prompt}`;
+        await generateCodeFromPrompt(editor, promptWithLanguage);
     });
 
     let enableCodeGenie = vscode.commands.registerCommand('codegenie.enableCodeGenie', () => {
@@ -69,7 +76,11 @@ export function activate(context: vscode.ExtensionContext) { // This file export
              vscode.window.showErrorMessage("No comment found.");
              return;
          }
-         await generateCodeFromPrompt(editor, lastComment);
+        const languageId = document.languageId;
+        const languageName = languageMap[languageId] || languageId;
+
+        const prompt = `In ${languageName}, ${lastComment}`;
+        await generateCodeFromPrompt(editor, prompt);
     });
 
     let triggerInlineCompletion = vscode.commands.registerCommand('codegenie.triggerInlineCompletion', async () => {
@@ -307,10 +318,8 @@ function extractOnlyCode(response: string): string {
 
         return response
             .split('\n')
-            .map(line => line.trim())
             .filter(line =>
                 line &&
-                !line.startsWith('#') &&
                 !line.startsWith('//') &&
                 !/^(Note|This|Explanation|For example|A more efficient solution|Here is|In this|To solve)/i.test(line)
             )
