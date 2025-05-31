@@ -95,9 +95,9 @@ For full details, please review the [DeepSeek License Agreement](https://github.
 
 | **Contributors** | **Milestone 1** | **Milestone 2** |
 |------------------|------------------|------------------|
-| [Mahesh Kiran](https://github.com/Mahesh-Kiran) | [Drive](https://www.youtube.com/) | – |
+| [Mahesh Kiran](https://github.com/Mahesh-Kiran) | [Drive](https://drive.google.com/file/d/1xfw9SunwAVXpOTAQwrsldIf_fNUCApZS/view?usp=drive_link) | [Youtube](https://youtu.be/lWarovvT_jk) |
 | [Krishna Chaitanya](https://github.com/Krishna752006) | [Drive](https://drive.google.com/file/d/1bj73JlDlgTRHQOKCWK3iCyE_lrKvhYP-/view?usp=sharing) | [Youtube](https://youtu.be/klt1-3YqaLk) |
-| [Sneha](https://github.com/sneha123-reddy) | [Drive](https://youtu.be/) | – |
-| [AASRITH CODER](https://github.com/AASRITHCODER) | [Drive](https://drive.google.com/file/d/1ZYD-4lAayVCkRBY7v4QpCB50rQpIIG5a/view?usp=drive_link) | – |
+| [Sneha](https://github.com/sneha123-reddy) | [Youtube](https://youtu.be/v8eRd9m_zjc) | [Youtube](https://youtu.be/wxUi3C49ve8) |
+| [AASRITH CODER](https://github.com/AASRITHCODER) | [Drive](https://drive.google.com/file/d/1ZYD-4lAayVCkRBY7v4QpCB50rQpIIG5a/view?usp=drive_link) | [Youtube](https://www.youtube.com/watch?v=Ty6n4Pm6C_U) |
 | [Triveni](https://github.com/AdepuTriveni) | [Youtube](https://www.youtube.com/watch?v=J30KbJHL8to) | [Youtube](https://youtu.be/sm6rf_juJt0?feature=shared) |
 | [Lokesh Vasireddy](https://github.com/LokeshVasireddy) | [Drive](https://drive.google.com/file/d/1bsHk2H0xT1xpuwLSEgrrTk13GvCW8Lkg/view) | [Youtube](https://youtu.be/sO_vApfgWSo) |
