@@ -82,12 +82,10 @@ async def explain_code(request: CodeRequest):
         "Explanation:"
     )
     max_tokens = min(request.max_tokens, 2048)  # or whatever your model supports
-    inputs = tokenizer(explain_prompt, return_tensors="pt").to("cuda")
+    inputs = tokenizer(explain_prompt, return_tensors="pt").to(DEVICE)
     outputs = model.generate(
         **inputs,
         max_length=max_tokens,
-        temperature=0.2,
-        do_sample=True,
         pad_token_id=model.config.eos_token_id
     )
     full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
@@ -106,17 +104,14 @@ async def improve_code(request: CodeRequest):
         f"Code:\n{code_to_improve}\n"
         "Improved Code:"
     )
-    inputs = tokenizer(improve_prompt, return_tensors="pt").to("cuda")
+    inputs = tokenizer(improve_prompt, return_tensors="pt").to(DEVICE)
     outputs = model.generate(
         **inputs,
         max_length=request.max_tokens,
-        temperature=0.2,
-        do_sample=True,
         pad_token_id=model.config.eos_token_id,
-        eos_token_id=model.config.eos_token_id
     )
     full_output = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    # Remove the prompt from the output if the model echoes it
+    
     if full_output.startswith(improve_prompt):
         response = full_output[len(improve_prompt):].lstrip("\n\r ")
     else:
