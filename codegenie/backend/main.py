@@ -81,7 +81,7 @@ async def explain_code(request: CodeRequest):
         f"{request.prompt}\n\n"
         "Explanation:"
     )
-    max_tokens = min(request.max_tokens, 2048)  # or whatever your model supports
+    max_tokens = min(request.max_tokens, 2048)
     inputs = tokenizer(explain_prompt, return_tensors="pt").to(DEVICE)
     outputs = model.generate(
         **inputs,
@@ -131,13 +131,12 @@ async def debug_code(request: CodeRequest):
         "4. After listing errors, provide the corrected version of the code.\n"
         "5. If the code is already correct, reply with 'No errors found.' and show the code as is.\n\n"
         f"Code:\n{code_to_debug}\n"
-        "New Code Errors (if any):"
     )
 
     inputs = tokenizer(enhanced_prompt, return_tensors="pt").to(DEVICE)
     outputs = model.generate(
     **inputs,
-    max_length = request.max_tokens  ,
+    max_length = request.max_tokens,
     pad_token_id = model.config.eos_token_id
     )
 
