@@ -2,8 +2,6 @@
 
 **CodeGenie** is a Visual Studio Code extension that integrates generative AI directly into your coding workflow. Designed by developers, for developers — it empowers users with intelligent suggestions, code generation, debugging assistance, and more.
 
----
-
 # 🚀 Introduction
 
 **CodeGenie** is an AI-powered coding assistant designed to **revolutionize the software development workflow**. Built on top of the powerful **DeepSeek-Coder** models, it brings intelligent, context-aware coding assistance directly into your editor — helping you write better code, faster.
@@ -16,8 +14,6 @@ With native **Visual Studio Code integration** and support for a wide range of p
 - 🌐 **Work seamlessly across technologies**, from web to machine learning
 
 Whether you're prototyping a web app, building data pipelines, or debugging legacy code, CodeGenie empowers you to stay in flow, reduce cognitive load, and focus on what matters most — building great software.
-
----
 
 # 💡 Use Cases
 
@@ -44,23 +40,17 @@ Here’s how CodeGenie supports developers across domains:
 - Use natural language to explore code functionality  
 - Learn programming concepts with contextual examples  
 
----
-
 ## 📐 Architecture Diagram (DeepSeek Coder V2)
 
 <p align="center">
   <img src="images/Architecture.png" style="width: 100%; max-height: 400px; object-fit: contain;" />
 </p>
 
----
-
 ## 🔄 Workflow Diagram
 
 <p align="center">
   <img src="images/Workflow.png" height: 60%" />
 </p>
-
----
 
 ### 📜 License & Acknowledgments
 
@@ -80,16 +70,12 @@ By using CodeGenie, you agree to comply with all relevant terms of the DeepSeek 
 
 For full details, please review the [DeepSeek License Agreement](https://github.com/deepseek-ai/DeepSeek-Coder/blob/main/LICENSE-MODEL) and associated documentation.
 
----
-
 #### 🔗 Repositories
 
 | Project          | Link                                                                                      |
 |------------------|-------------------------------------------------------------------------------------------|
 | **CodeGenie**      | [github.com/kmitofficial/CodeGenie-G336-PS25](https://github.com/kmitofficial/CodeGenie-G336-PS25)   |
 | **DeepSeek-Coder** | [github.com/deepseek-ai/DeepSeek-Coder](https://github.com/deepseek-ai/DeepSeek-Coder)               |
-
----
 
 ## 🙌 Contributors & Milestones
 
